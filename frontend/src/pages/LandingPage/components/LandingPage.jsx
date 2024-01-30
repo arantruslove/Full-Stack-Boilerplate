@@ -8,14 +8,10 @@ function LandingPage() {
         <Col md={8} className="text-center">
           <h1 className="display-4 fw-bold">Welcome to AI-CV Generator!</h1>
           <p className="lead mt-4">
-            Tired of the endless cycle of customizing your CV for every job
-            application? Discover the revolutionary AI-CV Generator! In just
-            seconds, transform your job search experience with a bespoke CV
-            perfectly tailored to each job description. Say goodbye to hours of
-            tedious editing and hello to effortless, impactful applications.
-            Don't miss out on your dream job – let AI-CV Generator be your
-            secret weapon in landing your ideal role faster and more efficiently
-            than ever before!
+            Streamline your job search with AI-CV Generator! Instantly craft a
+            customized CV that&apos;s precision-tailored to each job
+            description. Embrace the simplicity of one-click CV customization
+            and propel your career forward.
           </p>
           <div className="d-flex justify-content-center mt-4">
             <Button variant="primary" className="mx-2" href="#login">
