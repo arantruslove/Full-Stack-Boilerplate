@@ -7,7 +7,7 @@ import Card from "react-bootstrap/Card";
 import Nav from "react-bootstrap/Nav";
 import { Link } from "react-router-dom";
 
-function Auth() {
+function SignUp() {
   return (
     <Container
       className="align-items-center justify-content-center"
@@ -22,14 +22,14 @@ function Auth() {
         <Col xs={14} sm={10} md={8} lg={6} className="mx-auto">
           <Card className="p-4 shadow">
             <Card.Body>
-              <Nav variant="tabs" defaultActiveKey="login" className="mb-3">
+              <Nav variant="tabs" defaultActiveKey="sign-up" className="mb-3">
                 <Nav.Item>
                   <Nav.Link eventKey="login" as={Link} to="/login">
                     Login
                   </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
-                  <Nav.Link as={Link} to="/sign-up">
+                  <Nav.Link eventKey="sign-up" as={Link} to="/sign-up">
                     Sign Up
                   </Nav.Link>
                 </Nav.Item>
@@ -62,4 +62,4 @@ function Auth() {
   );
 }
 
-export default Auth;
+export default SignUp;

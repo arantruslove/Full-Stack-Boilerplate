@@ -1,15 +1,16 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LandingPage from "./pages/LandingPage/components/LandingPage";
 import PageNotFound from "./pages/PageNotFound/PageNotFound";
-import AuthContainer from "./pages/Auth/containers/AuthContainer";
+import LoginContainer from "./pages/Auth/containers/LoginContainer";
+import SignUpContainer from "./pages/Auth/containers/SignUpContainer";
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="" element={<LandingPage />} />
-        <Route path="/login" element={<AuthContainer isLogin={true} />} />
-        <Route path="/sign-up" element={<AuthContainer isLogin={false} />} />
+        <Route path="/login" element={<LoginContainer />} />
+        <Route path="/sign-up" element={<SignUpContainer />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </Router>

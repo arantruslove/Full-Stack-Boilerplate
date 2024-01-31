@@ -7,7 +7,7 @@ import Card from "react-bootstrap/Card";
 import Nav from "react-bootstrap/Nav";
 import { Link } from "react-router-dom";
 
-function Auth() {
+function Login() {
   return (
     <Container
       className="align-items-center justify-content-center"
@@ -62,4 +62,4 @@ function Auth() {
   );
 }
 
-export default Auth;
+export default Login;
