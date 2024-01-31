@@ -37,21 +37,36 @@ function SignUp() {
 
               <Form>
                 <Form.Group className="mb-3" controlId="formEmail">
-                  <Form.Label>Email Address</Form.Label>
-                  <Form.Control type="email" placeholder="Enter Email" />
+                  <Form.Label>Email</Form.Label>
+                  <Form.Control
+                    type="email"
+                    placeholder="user@quickcraft.com"
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-3" controlId="formName">
+                  <Form.Label>Full Name</Form.Label>
+                  <Form.Control placeholder="Joe Bloggs" />
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formPassword">
                   <Form.Label>Password</Form.Label>
-                  <Form.Control type="password" placeholder="Password" />
+                  <Form.Control
+                    type="password"
+                    placeholder="Enter a password"
+                  />
                 </Form.Group>
 
-                <Form.Group className="mb-3">
-                  <Link to="/request-password-reset/">Forgot Password?</Link>
+                <Form.Group className="mb-3" controlId="formConfirmPassword">
+                  <Form.Label>Confirm Password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    placeholder="Confirm your password"
+                  />
                 </Form.Group>
 
                 <Button variant="primary" type="submit">
-                  Login
+                  Sign Up
                 </Button>
               </Form>
             </Card.Body>
