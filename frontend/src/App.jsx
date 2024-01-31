@@ -8,7 +8,8 @@ function App() {
     <Router>
       <Routes>
         <Route path="" element={<LandingPage />} />
-        <Route path="/login" element={<AuthContainer />} />
+        <Route path="/login" element={<AuthContainer isLogin={true} />} />
+        <Route path="/sign-up" element={<AuthContainer isLogin={false} />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </Router>
