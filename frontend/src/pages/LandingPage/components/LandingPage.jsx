@@ -1,5 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Container, Row, Col, Button } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 function LandingPage() {
   return (
@@ -14,12 +15,16 @@ function LandingPage() {
             and propel your career forward.
           </p>
           <div className="d-flex justify-content-center mt-4">
-            <Button variant="primary" className="mx-2" href="#login">
-              Login
-            </Button>
-            <Button variant="success" className="mx-2" href="#signup">
-              Sign Up
-            </Button>
+            <Link to="/login">
+              <Button variant="primary" className="mx-2">
+                Login
+              </Button>
+            </Link>
+            <Link to="/sign-up">
+              <Button variant="success" className="mx-2">
+                Sign Up
+              </Button>
+            </Link>
           </div>
         </Col>
       </Row>
