@@ -13,7 +13,7 @@ function SignUp() {
       className="align-items-center justify-content-center"
       style={{ minHeight: "100vh" }}
     >
-      <Row className="justify-content-center mb-4 mt-5">
+      <Row className="justify-content-center mb-3 mt-3">
         <Col className="text-center">
           <h1 className="display-5">AI-CV Generator</h1>
         </Col>
