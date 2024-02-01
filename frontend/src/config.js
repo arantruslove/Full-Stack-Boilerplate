@@ -1,4 +1,2 @@
 // Centralising the backend root API
-const protocol = window.location.protocol;
-const hostname = window.location.hostname;
-export const backendRootDomain = `${protocol}//${hostname}/api/`;
+export const BACKEND_URL = `http://localhost:8000/api/`;
