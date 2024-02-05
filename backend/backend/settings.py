@@ -23,14 +23,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-g1tum!u(7@74))l4=s0wx(5i3ep(-p&v_wl(fh#xt_1zkh2(+c"
 
-# Environment specific variables
+# Security
 DEBUG = True
-
 ALLOWED_HOSTS = []
-
 CORS_ALLOW_ALL_ORIGINS = True
 
-# PostgreSQL
+# Custom User Model
+AUTH_USER_MODEL = "accounts.User"
+
+# Tests
+TEST_RUNNER = "django.test.runner.DiscoverRunner"
+
+# PostgreSQL database
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
