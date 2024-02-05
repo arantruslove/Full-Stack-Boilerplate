@@ -35,3 +35,8 @@ class UserTest(TestCase):
         with self.assertRaises(ValidationError):
             user = User(email="invalid-email", password="testpass789")
             user.full_clean()
+
+    def test_is_active_status(self):
+        """Testing that the User instance is inactive when first created."""
+        user = User.objects.create_user(email="inactive@user.com", password="foo")
+        self.assertEqual(user.is_active, False)
