@@ -3,6 +3,8 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.contrib.auth import get_user_model
 
+from accounts.models import EmailVerification
+
 User = get_user_model()
 
 
@@ -40,3 +42,30 @@ class UserTest(TestCase):
         """Testing that the User instance is inactive when first created."""
         user = User.objects.create_user(email="inactive@user.com", password="foo")
         self.assertEqual(user.is_active, False)
+
+
+class EmailVerificationTest(TestCase):
+    """Testing the EmailVerification model."""
+
+    def test_creation(self):
+        user = User.objects.create_user(email="normal@user.com", password="foo")
+        verification = EmailVerification.objects.create(user=user)
+        self.assertEqual(verification.user, user)
+        self.assertIsNotNone(verification.token)
+
+    def test_one_to_one_field(self):
+        user_1 = User.objects.create_user(email="user1@example.com", password="foo")
+        user_2 = User.objects.create_user(email="user2@example.com", password="foo")
+
+        verification_1 = EmailVerification.objects.create(user=user_1)
+        with self.assertRaises(IntegrityError):
+            verification_2 = EmailVerification.objects.create(user=user_1)
+
+    def test_token_uniqueness(self):
+        user_1 = User.objects.create_user(email="user1@example.com", password="foo")
+        user_2 = User.objects.create_user(email="user2@example.com", password="foo")
+
+        verification_1 = EmailVerification.objects.create(user=user_1)
+        verification_2 = EmailVerification.objects.create(user=user_2)
+
+        self.assertNotEqual(verification_1.token, verification_2.token)

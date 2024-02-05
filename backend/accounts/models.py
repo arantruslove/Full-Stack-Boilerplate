@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
+import secrets
 
 
 class UserManager(BaseUserManager):
@@ -40,7 +41,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractUser):
-    """User model."""
+    """Custom User model."""
 
     username = None
     email = models.EmailField(unique=True)
@@ -50,3 +51,16 @@ class User(AbstractUser):
     REQUIRED_FIELDS = []
 
     objects = UserManager()
+
+
+# Emal and password reset classes
+class EmailVerification(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    token = models.CharField(max_length=255, unique=True)
+
+    # kwargs included for the force_insert parameter
+    def save(self, **kwargs):
+        # Generate a unique token if it doesn't exist
+        if not self.token:
+            self.token = secrets.token_urlsafe(32)
+        super().save(**kwargs)
