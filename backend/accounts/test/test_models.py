@@ -55,7 +55,6 @@ class EmailVerificationTest(TestCase):
 
     def test_one_to_one_field(self):
         user_1 = User.objects.create_user(email="user1@example.com", password="foo")
-        user_2 = User.objects.create_user(email="user2@example.com", password="foo")
 
         verification_1 = EmailVerification.objects.create(user=user_1)
         with self.assertRaises(IntegrityError):
