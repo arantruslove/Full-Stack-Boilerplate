@@ -17,14 +17,14 @@ class SignUp(TestCase):
         response = self.client.post(self.url, data, format="json")
         self.assertEqual(response.status_code, 201)
 
-    def test_no_email_sign_up(self):
+    def test_no_email(self):
         data = {
             "password": "testpassword123",
         }
         response = self.client.post(self.url, data, format="json")
         self.assertEqual(response.status_code, 400)
 
-    def test_invalid_email_sign_up(self):
+    def test_invalid_email(self):
         data = {
             "email": "invalid-email",
             "password": "testpassword123",
