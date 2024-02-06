@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+import ast
+
+from backend.config import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,13 +23,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-g1tum!u(7@74))l4=s0wx(5i3ep(-p&v_wl(fh#xt_1zkh2(+c"
-
 # Security
-DEBUG = True
-ALLOWED_HOSTS = []
-CORS_ALLOW_ALL_ORIGINS = True
+SECRET_KEY = config["SECRET_KEY"]
+DEBUG = ast.literal_eval(config["DEBUG"])
+ALLOWED_HOSTS = config["ALLOWED_HOSTS"].split(",")
+CORS_ALLOW_ALL_ORIGINS = False
+CSRF_TRUSTED_ORIGINS = config["TRUSTED_ORIGINS"].split(",")
 
 # Custom User Model
 AUTH_USER_MODEL = "accounts.User"
@@ -34,15 +36,23 @@ AUTH_USER_MODEL = "accounts.User"
 # Tests
 TEST_RUNNER = "django.test.runner.DiscoverRunner"
 
+# Email Config
+EMAIL_BACKEND = config["EMAIL_BACKEND"]
+EMAIL_HOST = config["EMAIL_HOST"]
+EMAIL_HOST_USER = config["EMAIL_HOST_USER"]
+EMAIL_HOST_PASSWORD = config["EMAIL_HOST_PASSWORD"]
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
 # PostgreSQL database
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "mydatabase",
-        "USER": "myuser",
-        "PASSWORD": "mypassword",
-        "HOST": "db",
-        "PORT": 5432,
+        "NAME": config["DB_NAME"],
+        "USER": config["DB_USER"],
+        "PASSWORD": config["DB_PASSWORD"],
+        "HOST": config["DB_HOST"],
+        "PORT": config["DB_PORT"],
     }
 }
 
