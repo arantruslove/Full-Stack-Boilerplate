@@ -37,6 +37,7 @@ AUTH_USER_MODEL = "accounts.User"
 TEST_RUNNER = "django.test.runner.DiscoverRunner"
 
 # Email Config
+# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_BACKEND = config["EMAIL_BACKEND"]
 EMAIL_HOST = config["EMAIL_HOST"]
 EMAIL_HOST_USER = config["EMAIL_HOST_USER"]

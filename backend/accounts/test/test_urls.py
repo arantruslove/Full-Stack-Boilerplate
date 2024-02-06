@@ -2,6 +2,8 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from django.test import TestCase
 
+from accounts.models import User, EmailVerification
+
 
 class SignUp(TestCase):
 
@@ -31,3 +33,14 @@ class SignUp(TestCase):
         }
         response = self.client.post(self.url, data, format="json")
         self.assertEqual(response.status_code, 400)
+
+    def test_email_verification_creation(self):
+        data = {
+            "email": "newuser@example.com",
+            "password": "testpassword123",
+        }
+        self.client.post(self.url, data, format="json")
+
+        user = User.objects.get(email="newuser@example.com")
+        email = EmailVerification.objects.get(user=user)
+        self.assertEqual(email.user, user)
