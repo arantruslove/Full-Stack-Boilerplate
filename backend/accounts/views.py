@@ -39,7 +39,7 @@ def verify_email(request):
             # Setting the user as active and deleting its EmailVerification instance
             email_verification = EmailVerification.objects.get(token=token)
             user = email_verification.user
-            user.is_active = True
+            user.is_verified = True
             user.save()
             email_verification.delete()
 

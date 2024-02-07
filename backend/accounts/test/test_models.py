@@ -39,9 +39,9 @@ class UserTest(TestCase):
             user.full_clean()
 
     def test_is_active_status(self):
-        """Testing that the User instance is inactive when first created."""
+        """Testing that the User instance is unverified when first created."""
         user = User.objects.create_user(email="inactive@user.com", password="foo")
-        self.assertEqual(user.is_active, False)
+        self.assertEqual(user.is_verified, False)
 
 
 class EmailVerificationTest(TestCase):
