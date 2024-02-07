@@ -14,6 +14,7 @@ function SignUp({
   onEmailChange,
   onPasswordChange,
   onConfirmPasswordChange,
+  isSubmittable,
 }) {
   return (
     <Container
@@ -75,7 +76,11 @@ function SignUp({
                   />
                 </Form.Group>
 
-                <Button variant="primary" type="submit" disabled={true}>
+                <Button
+                  variant="primary"
+                  type="submit"
+                  disabled={!isSubmittable}
+                >
                   Sign Up
                 </Button>
               </Form>
