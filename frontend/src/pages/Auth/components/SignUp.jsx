@@ -7,7 +7,14 @@ import Card from "react-bootstrap/Card";
 import Nav from "react-bootstrap/Nav";
 import { Link } from "react-router-dom";
 
-function SignUp() {
+function SignUp({
+  email,
+  password,
+  confirmPassword,
+  onEmailChange,
+  onPasswordChange,
+  onConfirmPasswordChange,
+}) {
   return (
     <Container
       className="align-items-center justify-content-center"
@@ -40,13 +47,10 @@ function SignUp() {
                   <Form.Label>Email</Form.Label>
                   <Form.Control
                     type="email"
-                    placeholder="user@quickcraft.com"
+                    placeholder="user@example.com"
+                    value={email}
+                    onChange={(event) => onEmailChange(event.target.value)}
                   />
-                </Form.Group>
-
-                <Form.Group className="mb-3" controlId="formName">
-                  <Form.Label>Full Name</Form.Label>
-                  <Form.Control placeholder="Joe Bloggs" />
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formPassword">
@@ -54,6 +58,8 @@ function SignUp() {
                   <Form.Control
                     type="password"
                     placeholder="Enter a password"
+                    value={password}
+                    onChange={(event) => onPasswordChange(event.target.value)}
                   />
                 </Form.Group>
 
@@ -62,10 +68,14 @@ function SignUp() {
                   <Form.Control
                     type="password"
                     placeholder="Confirm your password"
+                    value={confirmPassword}
+                    onChange={(event) =>
+                      onConfirmPasswordChange(event.target.value)
+                    }
                   />
                 </Form.Group>
 
-                <Button variant="primary" type="submit">
+                <Button variant="primary" type="submit" disabled={true}>
                   Sign Up
                 </Button>
               </Form>
