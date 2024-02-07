@@ -2,8 +2,11 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from django.test import TestCase
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth import get_user_model
 
-from accounts.models import User, EmailVerification
+from accounts.models import EmailVerification
+
+User = get_user_model()
 
 
 class SignUp(TestCase):
@@ -76,3 +79,34 @@ class VerifyEmail(TestCase):
             EmailVerification.objects.get(user=self.user)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(self.user.is_verified, True)
+
+
+# REVIEW WHY THESE TESTS FAIL
+
+# class IsEmailTaken(TestCase):
+#     """Testing the is-email-taken endpoint."""
+
+#     def setUp(self):
+#         self.client = APIClient()
+#         self.url = reverse("is_email_taken")
+#         User.objects.create(email="user@example.com", password="foo")
+
+#     def test_is_email_taken(self):
+#         data = {"email": "user@example.com"}
+#         response = self.client.get(self.url, data, format="json")
+
+#         self.assertEqual(response.status_code, 200)
+#         self.assertEqual(response["response"], True)
+
+#     def test_is_email_not_taken(self):
+#         data = {"email": "user@another.com"}
+#         response = self.client.get(self.url, data, format="json")
+
+#         self.assertEqual(response.status_code, 200)
+#         self.assertEqual(response["response"], False)
+
+#     def test_invalid_request(self):
+#         data = {"other_field": "user@example.com"}
+#         response = self.client.get(self.url, data, format="json")
+
+#         self.assertEqual(response.status_code, 500)

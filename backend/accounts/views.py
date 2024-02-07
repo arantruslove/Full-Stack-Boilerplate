@@ -2,6 +2,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.db import transaction
 from rest_framework import status
+from django.contrib.auth import get_user_model
 
 from accounts.serializers import UserSerializer
 from accounts.email import send_verification_email
@@ -29,6 +30,22 @@ def sign_up(request):
         return Response(serializer.errors, status=400)
 
 
+@api_view(["GET"])
+def is_email_taken(request):
+    """Checks if there is already a user with the email."""
+    email = request.data.get("email")
+    if email is None:
+        return Response({"error": "No 'email' field has been provided."}, status=500)
+
+    User = get_user_model()
+    is_taken = User.objects.filter(email=email).exists()
+
+    if is_taken:
+        return Response({"response": True})
+    else:
+        return Response({"response": False})
+
+
 @api_view(["POST"])
 def verify_email(request):
     """Verifies a users account by setting is_active = True."""
@@ -45,7 +62,6 @@ def verify_email(request):
 
             return Response(
                 {"response": "Account successfully verified."},
-                status=status.HTTP_200_OK,
             )
 
     except EmailVerification.DoesNotExist:
