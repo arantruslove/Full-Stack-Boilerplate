@@ -83,30 +83,31 @@ class VerifyEmail(TestCase):
 
 # REVIEW WHY THESE TESTS FAIL
 
-# class IsEmailTaken(TestCase):
-#     """Testing the is-email-taken endpoint."""
 
-#     def setUp(self):
-#         self.client = APIClient()
-#         self.url = reverse("is_email_taken")
-#         User.objects.create(email="user@example.com", password="foo")
+class IsEmailTaken(TestCase):
+    """Testing the is-email-taken endpoint."""
 
-#     def test_is_email_taken(self):
-#         data = {"email": "user@example.com"}
-#         response = self.client.get(self.url, data, format="json")
+    def setUp(self):
+        self.client = APIClient()
+        self.url = reverse("is_email_taken")
+        User.objects.create(email="user@example.com", password="foo")
 
-#         self.assertEqual(response.status_code, 200)
-#         self.assertEqual(response["response"], True)
+    def test_is_email_taken(self):
+        data = {"email": "user@example.com"}
+        response = self.client.get(self.url, data, format="json")
 
-#     def test_is_email_not_taken(self):
-#         data = {"email": "user@another.com"}
-#         response = self.client.get(self.url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["response"], True)
 
-#         self.assertEqual(response.status_code, 200)
-#         self.assertEqual(response["response"], False)
+    def test_is_email_not_taken(self):
+        data = {"email": "user@another.com"}
+        response = self.client.get(self.url, data, format="json")
 
-#     def test_invalid_request(self):
-#         data = {"other_field": "user@example.com"}
-#         response = self.client.get(self.url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["response"], False)
 
-#         self.assertEqual(response.status_code, 500)
+    def test_invalid_request(self):
+        data = {"other_field": "user@example.com"}
+        response = self.client.get(self.url, data, format="json")
+
+        self.assertEqual(response.status_code, 500)

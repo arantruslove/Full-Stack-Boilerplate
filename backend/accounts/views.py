@@ -33,7 +33,7 @@ def sign_up(request):
 @api_view(["GET"])
 def is_email_taken(request):
     """Checks if there is already a user with the email."""
-    email = request.data.get("email")
+    email = request.query_params.get("email")
     if email is None:
         return Response({"error": "No 'email' field has been provided."}, status=500)
 
