@@ -28,6 +28,7 @@ SECRET_KEY = config["SECRET_KEY"]
 DEBUG = ast.literal_eval(config["DEBUG"])
 ALLOWED_HOSTS = config["ALLOWED_HOSTS"].split(",")
 CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = config["TRUSTED_ORIGINS"].split(",")
 
 # Custom User Model

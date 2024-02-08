@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import validator from "validator";
 
 import SignUp from "../components/SignUp";
-import { checkEmailTaken } from "../AuthApi";
+import { checkEmailTaken, signUpUser } from "../AuthApi";
 
 /**
  * Checks if the inputs fields are valid and allowed to be submitted.
@@ -24,19 +24,23 @@ function SignUpContainer() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isEmailTaken, setIsEmailTaken] = useState(false);
   const [isInputsValid, setIsInputsValid] = useState(false);
+  const [signUpFailed, setSignUpFailed] = useState(false);
+  const [signUpSuccess, setSignUpSuccess] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const effectFunction = async () => {
       const response = await checkEmailTaken({ email });
       if (response.ok) {
         const data = await response.json();
         const isTaken = data.response;
+
         setIsEmailTaken(isTaken);
         setIsInputsValid(isValid(email, password, confirmPassword, isTaken));
+        setSignUpFailed(false);
       }
     };
 
-    fetchData();
+    effectFunction();
   }, [email, password, confirmPassword]);
 
   // Event handles
@@ -52,6 +56,18 @@ function SignUpContainer() {
     setConfirmPassword(newText);
   };
 
+  // Signs up a new user when the sign up button is pressed
+  const handleSignUp = async () => {
+    const userInfo = { email: email, password: password };
+    const response = await signUpUser(userInfo);
+
+    if (response.ok) {
+      setSignUpSuccess(true);
+    } else {
+      setSignUpFailed(true);
+    }
+  };
+
   return (
     <SignUp
       email={email}
@@ -61,7 +77,10 @@ function SignUpContainer() {
       onEmailChange={handleEmailChange}
       onPasswordChange={handlePasswordChange}
       onConfirmPasswordChange={handleConfirmPasswordChange}
+      onSignUp={handleSignUp}
       isSubmittable={isInputsValid}
+      signUpFailed={signUpFailed}
+      signUpSuccess={signUpSuccess}
     />
   );
 }

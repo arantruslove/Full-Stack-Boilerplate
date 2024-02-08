@@ -16,6 +16,9 @@ function SignUp({
   onPasswordChange,
   onConfirmPasswordChange,
   isSubmittable,
+  onSignUp,
+  signUpFailed,
+  signUpSuccess,
 }) {
   return (
     <Container
@@ -43,53 +46,70 @@ function SignUp({
                   </Nav.Link>
                 </Nav.Item>
               </Nav>
-
-              <Form>
-                <Form.Group className="mb-3" controlId="formEmail">
-                  <Form.Label>Email</Form.Label>
-                  <Form.Control
-                    type="email"
-                    placeholder="user@example.com"
-                    value={email}
-                    onChange={(event) => onEmailChange(event.target.value)}
-                  />
-                  {isEmailTaken && (
-                    <Form.Text className="text-danger">
-                      *Email already registered.
-                    </Form.Text>
-                  )}
-                </Form.Group>
-
-                <Form.Group className="mb-3" controlId="formPassword">
-                  <Form.Label>Password</Form.Label>
-                  <Form.Control
-                    type="password"
-                    placeholder="Enter a password"
-                    value={password}
-                    onChange={(event) => onPasswordChange(event.target.value)}
-                  />
-                </Form.Group>
-
-                <Form.Group className="mb-3" controlId="formConfirmPassword">
-                  <Form.Label>Confirm Password</Form.Label>
-                  <Form.Control
-                    type="password"
-                    placeholder="Confirm your password"
-                    value={confirmPassword}
-                    onChange={(event) =>
-                      onConfirmPasswordChange(event.target.value)
-                    }
-                  />
-                </Form.Group>
-
-                <Button
-                  variant="primary"
-                  type="submit"
-                  disabled={!isSubmittable}
+              {signUpSuccess ? (
+                <p>
+                  Thank you for signing up! We&apos;ve just dispatched a
+                  verification email to your inbox. Please check your email and
+                  follow the instructions to complete your registration.
+                </p>
+              ) : (
+                <Form
+                  onSubmit={(event) => {
+                    event.preventDefault(); // Prevent the default form submission
+                    onSignUp();
+                  }}
                 >
-                  Sign Up
-                </Button>
-              </Form>
+                  <Form.Group className="mb-3" controlId="formEmail">
+                    <Form.Label>Email</Form.Label>
+                    <Form.Control
+                      type="email"
+                      placeholder="user@example.com"
+                      value={email}
+                      onChange={(event) => onEmailChange(event.target.value)}
+                    />
+                    {isEmailTaken && (
+                      <Form.Text className="text-danger">
+                        *Email already registered.
+                      </Form.Text>
+                    )}
+                  </Form.Group>
+
+                  <Form.Group className="mb-3" controlId="formPassword">
+                    <Form.Label>Password</Form.Label>
+                    <Form.Control
+                      type="password"
+                      placeholder="Enter a password"
+                      value={password}
+                      onChange={(event) => onPasswordChange(event.target.value)}
+                    />
+                  </Form.Group>
+
+                  <Form.Group className="mb-3" controlId="formConfirmPassword">
+                    <Form.Label>Confirm Password</Form.Label>
+                    <Form.Control
+                      type="password"
+                      placeholder="Confirm your password"
+                      value={confirmPassword}
+                      onChange={(event) =>
+                        onConfirmPasswordChange(event.target.value)
+                      }
+                    />
+                    {signUpFailed && (
+                      <Form.Text className="text-danger">
+                        *There was an error registering your account.
+                      </Form.Text>
+                    )}
+                  </Form.Group>
+
+                  <Button
+                    variant="primary"
+                    type="submit"
+                    disabled={!isSubmittable}
+                  >
+                    Sign Up
+                  </Button>
+                </Form>
+              )}
             </Card.Body>
           </Card>
         </Col>
