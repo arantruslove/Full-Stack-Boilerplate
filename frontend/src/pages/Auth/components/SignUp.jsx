@@ -11,6 +11,7 @@ function SignUp({
   email,
   password,
   confirmPassword,
+  isEmailTaken,
   onEmailChange,
   onPasswordChange,
   onConfirmPasswordChange,
@@ -52,6 +53,11 @@ function SignUp({
                     value={email}
                     onChange={(event) => onEmailChange(event.target.value)}
                   />
+                  {isEmailTaken && (
+                    <Form.Text className="text-danger">
+                      *Email already registered.
+                    </Form.Text>
+                  )}
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formPassword">

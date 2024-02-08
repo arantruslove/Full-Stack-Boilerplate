@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import validator from "validator";
 
 import SignUp from "../components/SignUp";
+import { checkEmailTaken } from "../AuthApi";
 
 /**
  * Checks if the inputs fields are valid and allowed to be submitted.
@@ -20,10 +21,22 @@ function SignUpContainer() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isEmailTaken, setIsEmailTaken] = useState(false);
   const [isInputsValid, setIsInputsValid] = useState(false);
 
   useEffect(() => {
     setIsInputsValid(isValid(email, password, confirmPassword));
+
+    const fetchData = async () => {
+      const response = await checkEmailTaken({ email });
+      if (response.ok) {
+        const data = await response.json();
+        const is_taken = data.response;
+        setIsEmailTaken(is_taken);
+      }
+    };
+
+    fetchData();
   }, [email, password, confirmPassword]);
 
   // Event handles
@@ -44,6 +57,7 @@ function SignUpContainer() {
       email={email}
       password={password}
       confirmPassword={confirmPassword}
+      isEmailTaken={isEmailTaken}
       onEmailChange={handleEmailChange}
       onPasswordChange={handlePasswordChange}
       onConfirmPasswordChange={handleConfirmPasswordChange}
