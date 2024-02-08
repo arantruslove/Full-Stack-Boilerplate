@@ -12,6 +12,34 @@ export function toQueryString(params) {
     .join("&");
 }
 
+/**
+ * Function to get the last segment of a URL or a pathname.
+ *
+ * @param {string} url - The URL or pathname to process.
+ * @returns {string | null}
+ */
+export function getLastUrlSegment(url) {
+  try {
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+      // Remove leading and trailing slashes from the url, then split it into segments.
+      const pathname = url.replace(/^\/|\/$/g, "");
+      const segments = pathname.split("/");
+      return segments[segments.length - 1];
+    }
+
+    const parsedUrl = new URL(url);
+
+    const pathname = parsedUrl.pathname.replace(/^\/|\/$/g, "");
+    const segments = pathname.split("/");
+
+    // Return the last segment.
+    return segments[segments.length - 1];
+  } catch (e) {
+    console.error(`Invalid URL: ${url}`);
+    return null;
+  }
+}
+
 function getCookie(name) {
   let cookieValue = null;
   if (document.cookie && document.cookie !== "") {

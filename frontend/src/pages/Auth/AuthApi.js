@@ -52,3 +52,28 @@ export async function signUpUser(data) {
 
   return response;
 }
+
+/**
+ * Verifies a user's email. Requires the following fields:
+ * - token
+ *
+ * @param {object} data
+ * @returns Promise
+ */
+export async function verifyEmail(data) {
+  const url = `${BASE_URL}verify-email/`;
+
+  const options = {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": csrftoken,
+    },
+    body: JSON.stringify(data),
+  };
+
+  const response = await fetch(url, options);
+
+  return response;
+}
