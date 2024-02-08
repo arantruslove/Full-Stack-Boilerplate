@@ -7,11 +7,12 @@ import { checkEmailTaken } from "../AuthApi";
 /**
  * Checks if the inputs fields are valid and allowed to be submitted.
  */
-function isValid(email, password, confirmPassword) {
+function isValid(email, password, confirmPassword, isEmailTaken) {
   if (
     validator.isEmail(email) &&
     password.length >= 8 &&
-    confirmPassword === password
+    confirmPassword === password &&
+    !isEmailTaken
   ) {
     return true;
   } else return false;
@@ -25,14 +26,13 @@ function SignUpContainer() {
   const [isInputsValid, setIsInputsValid] = useState(false);
 
   useEffect(() => {
-    setIsInputsValid(isValid(email, password, confirmPassword));
-
     const fetchData = async () => {
       const response = await checkEmailTaken({ email });
       if (response.ok) {
         const data = await response.json();
-        const is_taken = data.response;
-        setIsEmailTaken(is_taken);
+        const isTaken = data.response;
+        setIsEmailTaken(isTaken);
+        setIsInputsValid(isValid(email, password, confirmPassword, isTaken));
       }
     };
 
