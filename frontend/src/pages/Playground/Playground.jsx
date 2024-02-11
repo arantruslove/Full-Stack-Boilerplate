@@ -1,12 +1,13 @@
 import Button from "react-bootstrap/Button";
-import { testFetch } from "./playgroundApi";
+import { login } from "../Auth/AuthApi";
 
 function Playground() {
   // Event Handling
   const testFunc = async () => {
-    const response = await testFetch();
+    const data = { email: "normal@user.com", password: "foo" };
 
-    console.log(response);
+    const response = await login(data);
+    console.log(response.json());
   };
   return <Button onClick={testFunc}>Test</Button>;
 }

@@ -77,3 +77,28 @@ export async function verifyEmail(data) {
 
   return response;
 }
+
+/**
+ * User login request. Requires the following fields:
+ * - email
+ * - password
+ *
+ * @param {object} data
+ * @returns Promise
+ */
+export async function login(data) {
+  const url = `${BASE_URL}token/`;
+
+  const options = {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": csrftoken,
+    },
+    body: JSON.stringify(data),
+  };
+
+  const response = await fetch(url, options);
+  return response;
+}
