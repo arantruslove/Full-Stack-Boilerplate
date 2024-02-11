@@ -1,7 +1,6 @@
 from django.urls import reverse
 from rest_framework.test import APIClient
 from django.test import TestCase
-from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import get_user_model
 
 from accounts.models import EmailVerification
@@ -114,17 +113,40 @@ class VerifyEmail(TestCase):
         self.assertEqual(self.user.is_verified, True)
 
 
-class Login(TestCase):
-    """Tests the login endpoint."""
+class Token(TestCase):
+    """Tests the token endpoint."""
 
     def setUp(self):
         self.client = APIClient()
-        self.url = reverse("login")
+        self.url = reverse("token_obtain_pair")
         self.user = User.objects.create_user(
-            email="normal@user.com", password="foo", is_verified=True
+            email="newuser@example.com", password="foo"
         )
+        self.user.is_verified = True
+        self.user.save()
 
-    def test_login(self):
-        data = {"email": "normal@user.com", "password": "foo"}
+    def test_token_pair_success(self):
+        data = {"email": "newuser@example.com", "password": "foo"}
         response = self.client.post(self.url, data, format="json")
+
         self.assertEqual(response.status_code, 200)
+        self.assertIsNotNone(response.data["access"])
+        self.assertIsNotNone(response.data["refresh"])
+
+    def test_not_verified(self):
+        self.user.is_verified = False
+        self.user.save()
+
+        data = {"email": "newuser@example.com", "password": "foo"}
+        response = self.client.post(self.url, data, format="json")
+
+        self.assertEqual(response.status_code, 401)
+
+    def test_not_active(self):
+        self.user.is_active = False
+        self.user.save()
+
+        data = {"email": "newuser@example.com", "password": "foo"}
+        response = self.client.post(self.url, data, format="json")
+
+        self.assertEqual(response.status_code, 401)

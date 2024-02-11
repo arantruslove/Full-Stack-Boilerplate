@@ -1,10 +1,11 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from django.db import transaction
 from rest_framework import status
-from django.contrib.auth import get_user_model, login
+from django.db import transaction
+from django.contrib.auth import get_user_model
+from rest_framework_simplejwt.views import TokenObtainPairView
 
-from accounts.serializers import UserSerializer
+from accounts.serializers import UserSerializer, TokenObtainPairSerializer
 from accounts.email import send_verification_email
 from accounts.models import EmailVerification
 
@@ -70,27 +71,5 @@ def verify_email(request):
         )
 
 
-@api_view(["POST"])
-def login_view(request):
-    """
-    Logs the user in by setting an authentication cookie on the frontend
-    and creating a session in the database.
-    """
-    User = get_user_model()
-    email = request.data.get("email")
-    password = request.data.get("password")
-
-    try:
-        user = User.objects.get(email=email)
-    except User.DoesNotExist:
-        # If no user is found, return an invalid credentials response
-        return Response({"error": "Invalid credentials."}, status=401)
-
-    # Check if the provided password is correct
-    if user is not None and user.check_password(password):
-        login(request, user)
-        return Response({"response": "Login successful."}, status=200)
-
-    # If authentication fails, return an error response
-    else:
-        return Response({"error": "Invalid credentials."}, status=401)
+class TokenObtainPairView(TokenObtainPairView):
+    serializer_class = TokenObtainPairSerializer
