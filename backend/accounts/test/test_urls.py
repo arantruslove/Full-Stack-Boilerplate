@@ -22,7 +22,11 @@ class SignUp(TestCase):
             "password": "testpassword123",
         }
         response = self.client.post(self.url, data, format="json")
+        user = User.objects.get(email="newuser@example.com")
+
         self.assertEqual(response.status_code, 201)
+        self.assertTrue(user.check_password("testpassword123"))
+        self.assertFalse(user.check_password("wrongpassword"))
 
     def test_no_email(self):
         data = {
@@ -49,6 +53,35 @@ class SignUp(TestCase):
         user = User.objects.get(email="newuser@example.com")
         email = EmailVerification.objects.get(user=user)
         self.assertEqual(email.user, user)
+
+
+class IsEmailTaken(TestCase):
+    """Testing the is-email-taken endpoint."""
+
+    def setUp(self):
+        self.client = APIClient()
+        self.url = reverse("is_email_taken")
+        User.objects.create(email="user@example.com", password="foo")
+
+    def test_is_email_taken(self):
+        data = {"email": "user@example.com"}
+        response = self.client.get(self.url, data, format="json")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["response"], True)
+
+    def test_is_email_not_taken(self):
+        data = {"email": "user@another.com"}
+        response = self.client.get(self.url, data, format="json")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["response"], False)
+
+    def test_invalid_request(self):
+        data = {"other_field": "user@example.com"}
+        response = self.client.get(self.url, data, format="json")
+
+        self.assertEqual(response.status_code, 500)
 
 
 class VerifyEmail(TestCase):
@@ -81,33 +114,17 @@ class VerifyEmail(TestCase):
         self.assertEqual(self.user.is_verified, True)
 
 
-# REVIEW WHY THESE TESTS FAIL
-
-
-class IsEmailTaken(TestCase):
-    """Testing the is-email-taken endpoint."""
+class Login(TestCase):
+    """Tests the login endpoint."""
 
     def setUp(self):
         self.client = APIClient()
-        self.url = reverse("is_email_taken")
-        User.objects.create(email="user@example.com", password="foo")
+        self.url = reverse("login")
+        self.user = User.objects.create_user(
+            email="normal@user.com", password="foo", is_verified=True
+        )
 
-    def test_is_email_taken(self):
-        data = {"email": "user@example.com"}
-        response = self.client.get(self.url, data, format="json")
-
+    def test_login(self):
+        data = {"email": "normal@user.com", "password": "foo"}
+        response = self.client.post(self.url, data, format="json")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["response"], True)
-
-    def test_is_email_not_taken(self):
-        data = {"email": "user@another.com"}
-        response = self.client.get(self.url, data, format="json")
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["response"], False)
-
-    def test_invalid_request(self):
-        data = {"other_field": "user@example.com"}
-        response = self.client.get(self.url, data, format="json")
-
-        self.assertEqual(response.status_code, 500)
