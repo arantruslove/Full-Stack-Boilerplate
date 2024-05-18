@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
@@ -7,7 +8,13 @@ import Card from "react-bootstrap/Card";
 import Nav from "react-bootstrap/Nav";
 import { Link } from "react-router-dom";
 
-function Login() {
+function Login({ email, password, onEmailChange, onPasswordChange, onLogin }) {
+  let isLoginActive = false;
+
+  if (email.length > 0 && password.length > 0) {
+    isLoginActive = true;
+  }
+
   return (
     <Container
       className="align-items-center justify-content-center"
@@ -35,22 +42,46 @@ function Login() {
                 </Nav.Item>
               </Nav>
 
-              <Form>
+              <Form
+                noValidate
+                onSubmit={(event) => {
+                  event.preventDefault(); // Prevent the default form submission
+                  onLogin();
+                }}
+              >
                 <Form.Group className="mb-3" controlId="formEmail">
                   <Form.Label>Email</Form.Label>
-                  <Form.Control type="email" placeholder="Enter email" />
+                  <Form.Control
+                    type="email"
+                    placeholder="Enter email"
+                    value={email}
+                    onChange={(event) => {
+                      onEmailChange(event.target.value);
+                    }}
+                  />
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formPassword">
                   <Form.Label>Password</Form.Label>
-                  <Form.Control type="password" placeholder="Enter password" />
+                  <Form.Control
+                    type="password"
+                    placeholder="Enter password"
+                    value={password}
+                    onChange={(event) => {
+                      onPasswordChange(event.target.value);
+                    }}
+                  />
                 </Form.Group>
 
                 <Form.Group className="mb-3">
                   <Link to="/request-password-reset/">Forgot Password?</Link>
                 </Form.Group>
 
-                <Button variant="primary" type="submit">
+                <Button
+                  variant="primary"
+                  type="submit"
+                  disabled={!isLoginActive}
+                >
                   Login
                 </Button>
               </Form>

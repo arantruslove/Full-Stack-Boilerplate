@@ -130,8 +130,17 @@ class Token(TestCase):
         response = self.client.post(self.url, data, format="json")
 
         self.assertEqual(response.status_code, 200)
-        self.assertIsNotNone(response.data["access"])
-        self.assertIsNotNone(response.data["refresh"])
+        # Check if the cookies for access and refresh tokens are set
+        self.assertIn("rt_data", response.cookies)
+        self.assertIn("at_data", response.cookies)
+
+        # Additionally, you can check if the cookies are HTTP-only and their settings
+        self.assertTrue(response.cookies["rt_data"]["httponly"])
+        self.assertTrue(response.cookies["at_data"]["httponly"])
+
+        # Optional: Check for other cookie attributes such as 'samesite'
+        self.assertEqual(response.cookies["rt_data"]["samesite"], "Lax")
+        self.assertEqual(response.cookies["at_data"]["samesite"], "Lax")
 
     def test_not_verified(self):
         self.user.is_verified = False

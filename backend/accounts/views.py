@@ -73,3 +73,40 @@ def verify_email(request):
 
 class TokenObtainPairView(TokenObtainPairView):
     serializer_class = TokenObtainPairSerializer
+
+    def post(self, request, *args, **kwargs):
+        data = request.data.copy()  # Create a mutable copy of the data
+
+        # Convert username to lowercase if it's in the data
+        if "username" in data:
+            data["username"] = data["username"].lower()
+
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        response_data = serializer.validated_data  # Continue as per your logic
+
+        response = Response(
+            response_data, status=status.HTTP_200_OK
+        )  # Construct your response
+
+        # Check if refresh token is present in the response data
+        if response.data.get("refresh"):
+            response.set_cookie(
+                "rt_data",
+                response.data["refresh"],
+                httponly=True,
+                samesite="Lax",
+                expires=95 * 24 * 60 * 60,
+            )
+            del response.data["refresh"]
+
+        if response.data.get("access"):
+            response.set_cookie(
+                "at_data",
+                response.data["access"],
+                httponly=True,
+                samesite="Lax",
+            )
+            del response.data["access"]
+
+        return response

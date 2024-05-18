@@ -79,14 +79,15 @@ export async function verifyEmail(data) {
 }
 
 /**
- * User login request. Requires the following fields:
+ * User login request which obtains a refresh and access token and saves them as http
+ * only cookies. Requires the following fields:
  * - email
  * - password
  *
  * @param {object} data
  * @returns Promise
  */
-export async function login(data) {
+export async function obtainTokenPair(data) {
   const url = `${BASE_URL}token/`;
 
   const options = {
