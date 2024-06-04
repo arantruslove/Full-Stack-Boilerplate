@@ -8,7 +8,7 @@ import SignUpContainer from "./pages/Auth/containers/SignUpContainer";
 import Playground from "./pages/Playground/Playground";
 import VerifyEmail from "./pages/Auth/components/VerifyEmail";
 import VerifyEmailSuccess from "./pages/Auth/components/VerifyEmailSuccess";
-import AuthProvider from "./context/AuthProvider";
+import AuthProvider from "./authentication/AuthProvider";
 
 function App() {
   return (

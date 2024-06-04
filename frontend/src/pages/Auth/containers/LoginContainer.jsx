@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+import { obtainTokenPair } from "../../../authentication/AuthApi";
+import { AuthContext } from "../../../authentication/AuthProvider";
 import Login from "../components/Login";
-import { obtainTokenPair } from "../AuthApi";
 
 function LoginContainer() {
   const navigate = useNavigate();
+  const { setIsLoggedIn } = useContext(AuthContext);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,7 +29,7 @@ function LoginContainer() {
     if (response.ok) {
       // User login succeeded
 
-      // const data = await response.json();
+      setIsLoggedIn(true);
       navigate("/playground");
     } else if (response.status === 401) {
       // User provided incorrect credentials

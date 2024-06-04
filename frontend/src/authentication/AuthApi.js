@@ -1,5 +1,5 @@
-import { BACKEND_URL } from "../../config";
-import { toQueryString, csrftoken } from "../../utils";
+import { BACKEND_URL } from "../config";
+import { toQueryString, csrftoken } from "../utils";
 
 const BASE_URL = `${BACKEND_URL}accounts/`;
 

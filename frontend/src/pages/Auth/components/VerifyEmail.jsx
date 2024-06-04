@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 
 import { getLastUrlSegment } from "../../../utils";
-import { verifyEmail } from "../AuthApi";
+import { verifyEmail } from "../../../authentication/AuthApi";
 import PageNotFound from "../../PageNotFound/PageNotFound";
 
 /**
