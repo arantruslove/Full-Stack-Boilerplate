@@ -8,7 +8,14 @@ import Card from "react-bootstrap/Card";
 import Nav from "react-bootstrap/Nav";
 import { Link } from "react-router-dom";
 
-function Login({ email, password, onEmailChange, onPasswordChange, onLogin }) {
+function Login({
+  email,
+  password,
+  onEmailChange,
+  onPasswordChange,
+  onLogin,
+  isLoginIncorrect,
+}) {
   let isLoginActive = false;
 
   if (email.length > 0 && password.length > 0) {
@@ -60,8 +67,7 @@ function Login({ email, password, onEmailChange, onPasswordChange, onLogin }) {
                     }}
                   />
                 </Form.Group>
-
-                <Form.Group className="mb-3" controlId="formPassword">
+                <Form.Group className="mb-2" controlId="formPassword">
                   <Form.Label>Password</Form.Label>
                   <Form.Control
                     type="password"
@@ -72,11 +78,16 @@ function Login({ email, password, onEmailChange, onPasswordChange, onLogin }) {
                     }}
                   />
                 </Form.Group>
-
+                <Form.Group className="mb-1">
+                  {isLoginIncorrect && (
+                    <Form.Text className="text-danger">
+                      *Username or password is incorrect.
+                    </Form.Text>
+                  )}
+                </Form.Group>
                 <Form.Group className="mb-3">
                   <Link to="/request-password-reset/">Forgot Password?</Link>
                 </Form.Group>
-
                 <Button
                   variant="primary"
                   type="submit"
