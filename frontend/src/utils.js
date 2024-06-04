@@ -59,4 +59,3 @@ function getCookie(name) {
 }
 
 export const csrftoken = getCookie("csrftoken");
-export const accessToken = Cookies.get("at_data");
