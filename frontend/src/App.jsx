@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 
+import PrivateRoute from "./components/PrivateRoute";
 import LandingPage from "./pages/LandingPage/components/LandingPage";
 import PageNotFound from "./pages/PageNotFound/PageNotFound";
 import LoginContainer from "./pages/Auth/containers/LoginContainer";
@@ -11,12 +12,22 @@ import VerifyEmailSuccess from "./pages/Auth/components/VerifyEmailSuccess";
 function App() {
   return (
     <Routes>
+      {/* Private Routes */}
+      <Route
+        path="/playground"
+        element={
+          <PrivateRoute>
+            <Playground />
+          </PrivateRoute>
+        }
+      />
+
+      {/* Public Routes */}
       <Route path="" element={<LandingPage />} />
       <Route path="/login" element={<LoginContainer />} />
       <Route path="/sign-up" element={<SignUpContainer />} />
       <Route path="/verify-email/success" element={<VerifyEmailSuccess />} />
       <Route path="/verify-email/*" element={<VerifyEmail />} />
-      <Route path="/playground" element={<Playground />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
