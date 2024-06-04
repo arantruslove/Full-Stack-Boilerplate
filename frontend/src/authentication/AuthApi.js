@@ -103,3 +103,27 @@ export async function obtainTokenPair(data) {
   const response = await fetch(url, options);
   return response;
 }
+
+/**
+ * Refreshes the access token by making a POST request to the server.
+ *
+ * @param {Object} data - The data to be sent in the request body.
+ * @returns {Promise<Response>} - A promise that resolves to the response from the
+ *                                server.
+ */
+export async function refreshAccessToken(data) {
+  const url = `${BASE_URL}token/refresh/`;
+
+  const options = {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": csrftoken,
+    },
+    body: JSON.stringify(data),
+  };
+
+  const response = await fetch(url, options);
+  return response;
+}

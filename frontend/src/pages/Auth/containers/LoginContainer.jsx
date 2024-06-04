@@ -34,7 +34,6 @@ function LoginContainer() {
     } else if (response.status === 401) {
       // User provided incorrect credentials
 
-      console.log("Invalid login details.");
       setIsLoginIncorrect(true);
     } else {
       // Another error occurred

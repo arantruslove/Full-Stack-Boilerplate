@@ -8,8 +8,11 @@ import { AuthContext } from "../authentication/AuthProvider";
  * not authenticated then they will be redirected to the login.
  */
 function PrivateRoute({ children }) {
-  const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
+  const { isLoading, isLoggedIn } = useContext(AuthContext);
 
+  if (isLoading) {
+    return null;
+  }
   if (isLoggedIn) {
     return children;
   } else {

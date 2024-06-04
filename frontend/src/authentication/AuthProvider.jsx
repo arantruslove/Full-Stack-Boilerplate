@@ -1,12 +1,39 @@
-import { useState, createContext } from "react";
+import { useState, useEffect, createContext } from "react";
 
+import { refreshAccessToken } from "./AuthApi";
+
+// To access context in other components
 export const AuthContext = createContext();
 
 function AuthProvider({ children }) {
+  const [isLoading, setIsLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  // Automatically refreshes access token periodically
+  // Will stay logged in if the refresh of the access token is successful
+  // Will logout if the refresh is unsuccessful
+  useEffect(() => {
+    const refreshToken = async () => {
+      const response = await refreshAccessToken();
+
+      if (response.ok) {
+        setIsLoggedIn(true);
+        setIsLoading(false);
+      } else {
+        setIsLoggedIn(false);
+        setIsLoading(false);
+      }
+    };
+    refreshToken();
+
+    // Refresh access token every 29 minutes
+    setInterval(refreshToken, 29 * 60 * 1000);
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
+    <AuthContext.Provider
+      value={{ isLoading, setIsLoading, isLoggedIn, setIsLoggedIn }}
+    >
       {children}
     </AuthContext.Provider>
   );
