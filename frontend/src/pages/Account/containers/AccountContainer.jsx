@@ -1,12 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 
 import { getAccountDetails } from "../AccountApi";
+import { removeRefreshAccessTokens } from "../AccountApi";
+import { AuthContext } from "../../../authentication/AuthProvider";
 import Account from "../components/Account";
 
 /**Account information page container. */
 function AccountContainer() {
   const [isLoading, setIsLoading] = useState(true);
   const [email, setEmail] = useState("");
+
+  const { refreshToken } = useContext(AuthContext);
 
   useEffect(() => {
     const effectFunction = async () => {
@@ -20,10 +24,18 @@ function AccountContainer() {
     effectFunction();
   }, []);
 
+  const handleLogOutButtonClick = async () => {
+    // Logging out the user
+    await removeRefreshAccessTokens();
+    await refreshToken();
+  };
+
   if (isLoading) {
     return null;
   } else {
-    return <Account email={email} />;
+    return (
+      <Account email={email} onLogoutButtonClick={handleLogOutButtonClick} />
+    );
   }
 }
 

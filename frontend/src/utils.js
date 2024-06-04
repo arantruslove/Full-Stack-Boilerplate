@@ -1,5 +1,3 @@
-import Cookies from "js-cookie";
-
 /**
  * Converts a javascript object into query parameters.
  *

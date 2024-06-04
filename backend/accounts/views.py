@@ -150,6 +150,16 @@ class TokenRefreshView(TokenRefreshView):
         return response
 
 
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def logout(request):
+    response = Response({"detail": "Cookie Deleted!"})
+    response.delete_cookie("at_data")
+    response.delete_cookie("rt_data")
+
+    return response
+
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def account_details(request):
