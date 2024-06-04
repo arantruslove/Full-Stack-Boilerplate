@@ -1,7 +1,7 @@
 import { BACKEND_URL } from "../config";
 import { toQueryString, csrftoken } from "../utils";
 
-const BASE_URL = `${BACKEND_URL}accounts/`;
+const BASE_URL = `${BACKEND_URL}/accounts/`;
 
 /**
  * Requires an object input with the following fields:
