@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 import LandingPage from "./pages/LandingPage/components/LandingPage";
 import PageNotFound from "./pages/PageNotFound/PageNotFound";
@@ -10,17 +10,15 @@ import VerifyEmailSuccess from "./pages/Auth/components/VerifyEmailSuccess";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="" element={<LandingPage />} />
-        <Route path="/login" element={<LoginContainer />} />
-        <Route path="/sign-up" element={<SignUpContainer />} />
-        <Route path="/verify-email/success" element={<VerifyEmailSuccess />} />
-        <Route path="/verify-email/*" element={<VerifyEmail />} />
-        <Route path="/playground" element={<Playground />} />
-        <Route path="*" element={<PageNotFound />} />
-      </Routes>
-    </Router>
+    <Routes>
+      <Route path="" element={<LandingPage />} />
+      <Route path="/login" element={<LoginContainer />} />
+      <Route path="/sign-up" element={<SignUpContainer />} />
+      <Route path="/verify-email/success" element={<VerifyEmailSuccess />} />
+      <Route path="/verify-email/*" element={<VerifyEmail />} />
+      <Route path="/playground" element={<Playground />} />
+      <Route path="*" element={<PageNotFound />} />
+    </Routes>
   );
 }
 
