@@ -1,7 +1,7 @@
 import { BACKEND_URL } from "../config";
 import { toQueryString, csrftoken } from "../utils";
 
-const BASE_URL = `${BACKEND_URL}/accounts/`;
+const BASE_URL = `${BACKEND_URL}/accounts`;
 
 /**
  * Requires an object input with the following fields:
@@ -11,7 +11,7 @@ const BASE_URL = `${BACKEND_URL}/accounts/`;
  * @returns Promise
  */
 export async function checkEmailTaken(data) {
-  const url = `${BASE_URL}is-email-taken/?${toQueryString(data)}`;
+  const url = `${BASE_URL}/is-email-taken/?${toQueryString(data)}`;
 
   const options = {
     method: "GET",
@@ -36,7 +36,7 @@ export async function checkEmailTaken(data) {
  * @returns Promise
  */
 export async function signUpUser(data) {
-  const url = `${BASE_URL}sign-up/`;
+  const url = `${BASE_URL}/sign-up/`;
 
   const options = {
     method: "POST",
@@ -61,7 +61,7 @@ export async function signUpUser(data) {
  * @returns Promise
  */
 export async function verifyEmail(data) {
-  const url = `${BASE_URL}verify-email/`;
+  const url = `${BASE_URL}/verify-email/`;
 
   const options = {
     method: "POST",
@@ -88,7 +88,7 @@ export async function verifyEmail(data) {
  * @returns Promise
  */
 export async function obtainTokenPair(data) {
-  const url = `${BASE_URL}token/`;
+  const url = `${BASE_URL}/token/`;
 
   const options = {
     method: "POST",
@@ -112,7 +112,7 @@ export async function obtainTokenPair(data) {
  *                                server.
  */
 export async function refreshAccessToken(data) {
-  const url = `${BASE_URL}token/refresh/`;
+  const url = `${BASE_URL}/token/refresh/`;
 
   const options = {
     method: "POST",
