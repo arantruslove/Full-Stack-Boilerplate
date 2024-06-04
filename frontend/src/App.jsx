@@ -5,7 +5,7 @@ import LandingPage from "./pages/LandingPage/components/LandingPage";
 import PageNotFound from "./pages/PageNotFound/PageNotFound";
 import LoginContainer from "./pages/Auth/containers/LoginContainer";
 import SignUpContainer from "./pages/Auth/containers/SignUpContainer";
-import Playground from "./pages/Playground/Playground";
+import AccountContainer from "./pages/Account/containers/AccountContainer";
 import VerifyEmail from "./pages/Auth/components/VerifyEmail";
 import VerifyEmailSuccess from "./pages/Auth/components/VerifyEmailSuccess";
 import AuthProvider from "./authentication/AuthProvider";
@@ -16,10 +16,10 @@ function App() {
       <Routes>
         {/* Private Routes */}
         <Route
-          path="/playground"
+          path="/account"
           element={
             <PrivateRoute>
-              <Playground />
+              <AccountContainer />
             </PrivateRoute>
           }
         />

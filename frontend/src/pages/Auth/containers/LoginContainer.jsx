@@ -7,7 +7,7 @@ import Login from "../components/Login";
 
 function LoginContainer() {
   const navigate = useNavigate();
-  const { setIsLoggedIn } = useContext(AuthContext);
+  const { refreshToken } = useContext(AuthContext);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,8 +29,8 @@ function LoginContainer() {
     if (response.ok) {
       // User login succeeded
 
-      setIsLoggedIn(true);
-      navigate("/playground");
+      await refreshToken();
+      navigate("/account");
     } else if (response.status === 401) {
       // User provided incorrect credentials
 

@@ -1,3 +1,5 @@
+import Cookies from "js-cookie";
+
 /**
  * Converts a javascript object into query parameters.
  *
@@ -57,3 +59,4 @@ function getCookie(name) {
 }
 
 export const csrftoken = getCookie("csrftoken");
+export const accessToken = Cookies.get("at_data");
