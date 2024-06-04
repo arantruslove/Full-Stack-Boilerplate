@@ -8,28 +8,31 @@ import SignUpContainer from "./pages/Auth/containers/SignUpContainer";
 import Playground from "./pages/Playground/Playground";
 import VerifyEmail from "./pages/Auth/components/VerifyEmail";
 import VerifyEmailSuccess from "./pages/Auth/components/VerifyEmailSuccess";
+import AuthProvider from "./context/AuthProvider";
 
 function App() {
   return (
-    <Routes>
-      {/* Private Routes */}
-      <Route
-        path="/playground"
-        element={
-          <PrivateRoute>
-            <Playground />
-          </PrivateRoute>
-        }
-      />
+    <AuthProvider value={true}>
+      <Routes>
+        {/* Private Routes */}
+        <Route
+          path="/playground"
+          element={
+            <PrivateRoute>
+              <Playground />
+            </PrivateRoute>
+          }
+        />
 
-      {/* Public Routes */}
-      <Route path="" element={<LandingPage />} />
-      <Route path="/login" element={<LoginContainer />} />
-      <Route path="/sign-up" element={<SignUpContainer />} />
-      <Route path="/verify-email/success" element={<VerifyEmailSuccess />} />
-      <Route path="/verify-email/*" element={<VerifyEmail />} />
-      <Route path="*" element={<PageNotFound />} />
-    </Routes>
+        {/* Public Routes */}
+        <Route path="" element={<LandingPage />} />
+        <Route path="/login" element={<LoginContainer />} />
+        <Route path="/sign-up" element={<SignUpContainer />} />
+        <Route path="/verify-email/success" element={<VerifyEmailSuccess />} />
+        <Route path="/verify-email/*" element={<VerifyEmail />} />
+        <Route path="*" element={<PageNotFound />} />
+      </Routes>
+    </AuthProvider>
   );
 }
 
