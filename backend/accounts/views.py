@@ -4,6 +4,8 @@ from rest_framework import status
 from django.db import transaction
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import permission_classes
 
 from accounts.serializers import UserSerializer, TokenObtainPairSerializer
 from accounts.email import send_verification_email
@@ -146,3 +148,10 @@ class TokenRefreshView(TokenRefreshView):
 
         response.data.pop("access", None)
         return response
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def account_details(request):
+    """Fetch the users account details (only email currently)."""
+    return Response({"email": request.user.email})
