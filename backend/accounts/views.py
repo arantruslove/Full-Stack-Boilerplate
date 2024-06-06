@@ -153,6 +153,7 @@ class TokenRefreshView(TokenRefreshView):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def logout(request):
+    """Log out user by removing their refresh and access tokens."""
     response = Response({"detail": "Cookie Deleted!"})
     response.delete_cookie("at_data")
     response.delete_cookie("rt_data")
