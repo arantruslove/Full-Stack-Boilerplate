@@ -2,6 +2,7 @@ import Cookies from "js-cookie";
 
 import { BACKEND_URL } from "./config";
 import { csrftoken, toQueryString } from "./utils.js";
+import { apiClient } from "./apiClient.js";
 
 const BASE_URL = `${BACKEND_URL}/accounts`;
 
@@ -14,18 +15,7 @@ const BASE_URL = `${BACKEND_URL}/accounts`;
  */
 export async function checkEmailTaken(data) {
   const url = `${BASE_URL}/is-email-taken/?${toQueryString(data)}`;
-
-  const options = {
-    method: "GET",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": csrftoken,
-    },
-  };
-
-  const response = await fetch(url, options);
-
+  const response = await apiClient.get(url, false);
   return response;
 }
 
@@ -40,17 +30,7 @@ export async function checkEmailTaken(data) {
 export async function signUpUser(data) {
   const url = `${BASE_URL}/sign-up/`;
 
-  const options = {
-    method: "POST",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": csrftoken,
-    },
-    body: JSON.stringify(data),
-  };
-
-  const response = await fetch(url, options);
+  const response = await apiClient.post(url, false, data);
 
   return response;
 }
@@ -64,19 +44,7 @@ export async function signUpUser(data) {
  */
 export async function verifyEmail(data) {
   const url = `${BASE_URL}/verify-email/`;
-
-  const options = {
-    method: "POST",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": csrftoken,
-    },
-    body: JSON.stringify(data),
-  };
-
-  const response = await fetch(url, options);
-
+  const response = await apiClient.post(url, false, data);
   return response;
 }
 
@@ -91,18 +59,7 @@ export async function verifyEmail(data) {
  */
 export async function obtainTokenPair(data) {
   const url = `${BASE_URL}/token/`;
-
-  const options = {
-    method: "POST",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": csrftoken,
-    },
-    body: JSON.stringify(data),
-  };
-
-  const response = await fetch(url, options);
+  const response = await apiClient.post(url, false, data);
   return response;
 }
 
@@ -116,56 +73,20 @@ export async function obtainTokenPair(data) {
 export async function refreshAccessToken(data) {
   const url = `${BASE_URL}/token/refresh/`;
 
-  const options = {
-    method: "POST",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": csrftoken,
-    },
-    body: JSON.stringify(data),
-  };
-
-  const response = await fetch(url, options);
+  const response = await apiClient.post(url, true, data);
   return response;
 }
 
 /**Fetches the user's email address.*/
 export async function getAccountDetails() {
   const url = `${BASE_URL}/account-details/`;
-  const accessToken = Cookies.get("at_data");
-
-  const options = {
-    method: "GET",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": csrftoken,
-      Authorization: `Bearer ${accessToken}`,
-    },
-  };
-
-  const response = await fetch(url, options);
-
+  const response = await apiClient.get(url, true);
   return response;
 }
 
 /**Removes the refresh and access token so that the user is logged out. */
 export async function removeRefreshAccessTokens() {
   const url = `${BASE_URL}/logout/`;
-  const accessToken = Cookies.get("at_data");
-
-  const options = {
-    method: "POST",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": csrftoken,
-      Authorization: `Bearer ${accessToken}`,
-    },
-  };
-
-  const response = await fetch(url, options);
-
+  const response = await apiClient.post(url, true);
   return response;
 }
