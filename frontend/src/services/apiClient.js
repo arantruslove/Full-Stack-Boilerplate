@@ -3,6 +3,15 @@ import Cookies from "js-cookie";
 import { csrftoken } from "./utils";
 
 /**
+ * API request function naming conventions:
+ * GET: e.g. getUser
+ * POST: e.g. createUser
+ * PUT/PATCH: e.g. editUser
+ * DELTE: deleteUser
+ *
+ */
+
+/**
  * Performs a GET request to the specified URL.
  * @param {string} url - The URL to send the GET request to.
  * @param {boolean} authenticated - Indicates whether the request should be authenticated.

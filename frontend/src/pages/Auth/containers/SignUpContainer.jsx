@@ -2,7 +2,10 @@ import { useState, useEffect } from "react";
 import validator from "validator";
 
 import SignUp from "../components/SignUp";
-import { checkEmailTaken, signUpUser } from "../../../services/accountRequests";
+import {
+  getEmailTakenStatus,
+  createUser,
+} from "../../../services/accountRequests";
 
 /**
  * Checks if the inputs fields are valid and allowed to be submitted.
@@ -29,7 +32,7 @@ function SignUpContainer() {
 
   useEffect(() => {
     const effectFunction = async () => {
-      const response = await checkEmailTaken({ email });
+      const response = await getEmailTakenStatus({ email });
       if (response.ok) {
         const data = await response.json();
         const isTaken = data.response;
@@ -59,7 +62,7 @@ function SignUpContainer() {
   // Signs up a new user when the sign up button is pressed
   const handleSignUp = async () => {
     const userInfo = { email: email, password: password };
-    const response = await signUpUser(userInfo);
+    const response = await createUser(userInfo);
 
     if (response.ok) {
       setSignUpSuccess(true);

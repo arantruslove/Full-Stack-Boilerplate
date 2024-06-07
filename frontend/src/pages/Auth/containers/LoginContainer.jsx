@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { obtainTokenPair } from "../../../services/accountRequests";
+import { getTokenPair } from "../../../services/accountRequests";
 import { AuthContext } from "../../../authentication/AuthProvider";
 import Login from "../components/Login";
 
@@ -24,7 +24,7 @@ function LoginContainer() {
 
   const handleLogin = async () => {
     const data = { email: email, password: password };
-    const response = await obtainTokenPair(data);
+    const response = await getTokenPair(data);
 
     if (response.ok) {
       // User login succeeded

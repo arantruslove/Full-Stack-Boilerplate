@@ -1,6 +1,6 @@
 import { useState, useEffect, createContext } from "react";
 
-import { refreshAccessToken } from "../services/accountRequests";
+import { getRefreshAccessTokens } from "../services/accountRequests";
 
 // To access context in other components
 export const AuthContext = createContext();
@@ -10,7 +10,7 @@ function AuthProvider({ children }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const refreshToken = async () => {
-    const response = await refreshAccessToken();
+    const response = await getRefreshAccessTokens();
 
     if (response.ok) {
       setIsLoggedIn(true);

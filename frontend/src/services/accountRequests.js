@@ -1,7 +1,5 @@
-import Cookies from "js-cookie";
-
 import { BACKEND_URL } from "./config";
-import { csrftoken, toQueryString } from "./utils.js";
+import { toQueryString } from "./utils.js";
 import { apiClient } from "./apiClient.js";
 
 const BASE_URL = `${BACKEND_URL}/accounts`;
@@ -13,7 +11,7 @@ const BASE_URL = `${BACKEND_URL}/accounts`;
  * @param {object} data
  * @returns Promise
  */
-export async function checkEmailTaken(data) {
+export async function getEmailTakenStatus(data) {
   const url = `${BASE_URL}/is-email-taken/?${toQueryString(data)}`;
   const response = await apiClient.get(url, false);
   return response;
@@ -27,7 +25,7 @@ export async function checkEmailTaken(data) {
  * @param {object} data
  * @returns Promise
  */
-export async function signUpUser(data) {
+export async function createUser(data) {
   const url = `${BASE_URL}/sign-up/`;
 
   const response = await apiClient.post(url, false, data);
@@ -57,7 +55,7 @@ export async function verifyEmail(data) {
  * @param {object} data
  * @returns Promise
  */
-export async function obtainTokenPair(data) {
+export async function getTokenPair(data) {
   const url = `${BASE_URL}/token/`;
   const response = await apiClient.post(url, false, data);
   return response;
@@ -70,7 +68,7 @@ export async function obtainTokenPair(data) {
  * @returns {Promise<Response>} - A promise that resolves to the response from the
  *                                server.
  */
-export async function refreshAccessToken(data) {
+export async function getRefreshAccessTokens(data) {
   const url = `${BASE_URL}/token/refresh/`;
 
   const response = await apiClient.post(url, true, data);
