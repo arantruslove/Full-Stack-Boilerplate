@@ -16,6 +16,7 @@ function Account({ email, onLogoutButtonClick }) {
       <Button variant="secondary" onClick={onLogoutButtonClick}>
         Logout
       </Button>
+      <Button variant="success">Change Password</Button>
       <Button variant="danger">Delete Account</Button>
     </ListGroup>
   );

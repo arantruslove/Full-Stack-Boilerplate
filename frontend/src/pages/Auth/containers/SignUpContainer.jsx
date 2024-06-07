@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import validator from "validator";
 
 import SignUp from "../components/SignUp";
-import { checkEmailTaken, signUpUser } from "../../../authentication/AuthApi";
+import { checkEmailTaken, signUpUser } from "../../../services/accountRequests";
 
 /**
  * Checks if the inputs fields are valid and allowed to be submitted.

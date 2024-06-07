@@ -1,6 +1,6 @@
 import { useState, useEffect, createContext } from "react";
 
-import { refreshAccessToken } from "./AuthApi";
+import { refreshAccessToken } from "../services/accountRequests";
 
 // To access context in other components
 export const AuthContext = createContext();

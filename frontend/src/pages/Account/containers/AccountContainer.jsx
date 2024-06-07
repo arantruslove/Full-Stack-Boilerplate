@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 
-import { getAccountDetails } from "../AccountApi";
-import { removeRefreshAccessTokens } from "../AccountApi";
+import { getAccountDetails } from "../../../services/accountRequests";
+import { removeRefreshAccessTokens } from "../../../services/accountRequests";
 import { AuthContext } from "../../../authentication/AuthProvider";
 import Account from "../components/Account";
 

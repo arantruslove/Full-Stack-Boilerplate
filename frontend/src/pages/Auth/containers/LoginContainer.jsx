@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { obtainTokenPair } from "../../../authentication/AuthApi";
+import { obtainTokenPair } from "../../../services/accountRequests";
 import { AuthContext } from "../../../authentication/AuthProvider";
 import Login from "../components/Login";
 
