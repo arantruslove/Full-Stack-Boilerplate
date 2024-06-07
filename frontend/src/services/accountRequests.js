@@ -1,7 +1,7 @@
 import Cookies from "js-cookie";
 
 import { BACKEND_URL } from "./config";
-import { csrftoken, toQueryString } from "../utils.js";
+import { csrftoken, toQueryString } from "./utils.js";
 
 const BASE_URL = `${BACKEND_URL}/accounts`;
 
