@@ -1,6 +1,9 @@
 import { useState, useEffect, useContext } from "react";
 
-import { getAccountDetails } from "../../../services/accountRequests";
+import {
+  deleteUser,
+  getAccountDetails,
+} from "../../../services/accountRequests";
 import { removeRefreshAccessTokens } from "../../../services/accountRequests";
 import { AuthContext } from "../../../authentication/AuthProvider";
 import Account from "../components/Account";
@@ -30,11 +33,25 @@ function AccountContainer() {
     await refreshToken();
   };
 
+  const handleDeleteButtonClick = async () => {
+    // Deletes the user's account and logs them out
+    const response = await deleteUser();
+
+    // If successful, log the user out of the page
+    if (response.ok) {
+      await refreshToken();
+    }
+  };
+
   if (isLoading) {
     return null;
   } else {
     return (
-      <Account email={email} onLogoutButtonClick={handleLogOutButtonClick} />
+      <Account
+        email={email}
+        onLogoutButtonClick={handleLogOutButtonClick}
+        onDeleteButtonClick={handleDeleteButtonClick}
+      />
     );
   }
 }

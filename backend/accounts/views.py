@@ -161,6 +161,22 @@ def logout(request):
     return response
 
 
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def delete_user(request):
+    """Hard deletion of the user's account."""
+
+    # Deleting the user
+    request.user.delete()
+    response = Response({"detail": "User deleted"})
+
+    # Deleting the cookies
+    response.delete_cookie("at_data")
+    response.delete_cookie("rt_data")
+
+    return response
+
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def account_details(request):

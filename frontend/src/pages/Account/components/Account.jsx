@@ -1,7 +1,7 @@
 import { ListGroup, Button } from "react-bootstrap";
 
 /**Page component that displays account details.*/
-function Account({ email, onLogoutButtonClick }) {
+function Account({ email, onLogoutButtonClick, onDeleteButtonClick }) {
   return (
     <ListGroup>
       <ListGroup.Item
@@ -17,7 +17,9 @@ function Account({ email, onLogoutButtonClick }) {
         Logout
       </Button>
       <Button variant="success">Change Password</Button>
-      <Button variant="danger">Delete Account</Button>
+      <Button variant="danger" onClick={onDeleteButtonClick}>
+        Delete Account
+      </Button>
     </ListGroup>
   );
 }

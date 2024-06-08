@@ -88,3 +88,10 @@ export async function removeRefreshAccessTokens() {
   const response = await apiClient.post(url, true);
   return response;
 }
+
+/**Hard deletes the user's account and removes refresh and access tokens. */
+export async function deleteUser() {
+  const url = `${BASE_URL}/delete-user/`;
+  const response = await apiClient.delete(url, true);
+  return response;
+}
