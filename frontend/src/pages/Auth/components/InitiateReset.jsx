@@ -7,7 +7,7 @@ import Card from "react-bootstrap/Card";
 
 function InitiateReset({
   inputText,
-  doesEmailExist,
+  isEmailUnknown,
   isResetInitiated,
   onInputTextChange,
   onButtonClick,
@@ -44,7 +44,7 @@ function InitiateReset({
                       }
                     />
 
-                    {doesEmailExist && (
+                    {isEmailUnknown && (
                       <Form.Text className="text-danger">
                         *No account found with this email.
                       </Form.Text>
