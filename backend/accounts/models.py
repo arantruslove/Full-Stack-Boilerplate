@@ -55,12 +55,26 @@ class User(AbstractUser):
 
 # Emal and password reset classes
 class EmailVerification(models.Model):
+    """Model to track email verification."""
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     token = models.CharField(max_length=255, unique=True)
 
     # kwargs included for the force_insert parameter
     def save(self, **kwargs):
         # Generate a unique token if it doesn't exist
+        if not self.token:
+            self.token = secrets.token_urlsafe(32)
+        super().save(**kwargs)
+
+
+class PasswordReset(models.Model):
+    """Model to track password reset."""
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    token = models.CharField(max_length=255, unique=True)
+
+    def save(self, **kwargs):
         if not self.token:
             self.token = secrets.token_urlsafe(32)
         super().save(**kwargs)

@@ -95,3 +95,26 @@ export async function deleteUser() {
   const response = await apiClient.delete(url, true);
   return response;
 }
+
+/** Initiates the password reset process.
+ *
+ * Requires the field:
+ * - email
+ */
+export async function initiatePasswordReset(data) {
+  const url = `${BASE_URL}/initiate-password-reset/`;
+  const response = await apiClient.post(url, true, data);
+  return response;
+}
+
+/**Completes the password reset.
+ *
+ * Requires the fields:
+ * - new_password
+ * - token
+ */
+export async function resetPassword(data) {
+  const url = `${BASE_URL}/reset-password/`;
+  const response = await apiClient.post(url, false, data);
+  return response;
+}

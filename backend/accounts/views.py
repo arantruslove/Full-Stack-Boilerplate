@@ -8,8 +8,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
 
 from accounts.serializers import UserSerializer, TokenObtainPairSerializer
-from accounts.email import send_verification_email
-from accounts.models import EmailVerification
+from accounts.email import send_verification_email, send_password_reset_email
+from accounts.models import EmailVerification, User, PasswordReset
 
 
 @api_view(["POST"])
@@ -175,6 +175,74 @@ def delete_user(request):
     response.delete_cookie("rt_data")
 
     return response
+
+
+@api_view(["POST"])
+def initiate_password_reset(request):
+    """
+    Initiates the password reset process by creating a PasswordReset model
+    instance and sending the weblink to reset the password.
+    """
+    email = request.data.get("email")
+
+    try:
+        user = User.objects.get(email=email)
+
+    except User.DoesNotExist:
+        return Response(
+            {"detail": "No user with the provided email."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    # Checking if there is already a password reset link that is yet to be used
+    # Check for existing, unused password reset link
+    existing_reset = PasswordReset.objects.filter(user=user).first()
+    if existing_reset:
+        return Response(
+            {"detail": "A password reset link has already been sent."},
+            status=status.HTTP_409_CONFLICT,
+        )
+
+    if user is None:
+        return Response(
+            {"detail": "No user with the provided username or email."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    # Proceed with password reset
+    with transaction.atomic():
+        password_reset = PasswordReset.objects.create(user=user)
+        token = password_reset.token
+        send_password_reset_email(user, token)
+
+    return Response({"detail": "Password reset email sent."})
+
+
+@api_view(["POST"])
+def complete_password_reset(request):
+    """
+    Completes the password reset when the user provides their new password.
+    """
+    new_password = request.data["new_password"]
+    token = request.data["token"]
+
+    # Getting the associated PasswordReset model instance by the token in the url
+    try:
+        password_reset = PasswordReset.objects.get(token=token)
+    except:
+        return Response(
+            {"details": "The token provided is not valid."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    # Getting the user and changing its password
+    user = password_reset.user
+    user.set_password(new_password)
+    user.save()
+
+    password_reset.delete()
+
+    return Response({"detail": "Your password has been changed."})
 
 
 @api_view(["GET"])

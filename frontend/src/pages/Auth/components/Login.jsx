@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
@@ -86,7 +85,7 @@ function Login({
                   )}
                 </Form.Group>
                 <Form.Group className="mb-3">
-                  <Link to="/request-password-reset/">Forgot Password?</Link>
+                  <Link to="/initiate-password-reset">Forgot Password?</Link>
                 </Form.Group>
                 <Button
                   variant="primary"

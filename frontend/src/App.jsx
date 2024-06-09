@@ -9,6 +9,8 @@ import AccountContainer from "./pages/Account/containers/AccountContainer";
 import VerifyEmail from "./pages/Auth/components/VerifyEmail";
 import VerifyEmailSuccess from "./pages/Auth/components/VerifyEmailSuccess";
 import AuthProvider from "./authentication/AuthProvider";
+import ResetPasswordContainer from "./pages/Auth/containers/ResetPasswordContainer";
+import InitiateResetContainer from "./pages/Auth/containers/InitiateResetContainer";
 
 function App() {
   return (
@@ -30,6 +32,11 @@ function App() {
         <Route path="/sign-up" element={<SignUpContainer />} />
         <Route path="/verify-email/success" element={<VerifyEmailSuccess />} />
         <Route path="/verify-email/*" element={<VerifyEmail />} />
+        <Route
+          path="/initiate-password-reset"
+          element={<InitiateResetContainer />}
+        />
+        <Route path="/reset-password/*" element={<ResetPasswordContainer />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </AuthProvider>

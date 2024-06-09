@@ -1,7 +1,10 @@
+import { useNavigate } from "react-router-dom";
 import { ListGroup, Button } from "react-bootstrap";
 
 /**Page component that displays account details.*/
 function Account({ email, onLogoutButtonClick, onDeleteButtonClick }) {
+  const navigate = useNavigate();
+
   return (
     <ListGroup>
       <ListGroup.Item
@@ -16,7 +19,12 @@ function Account({ email, onLogoutButtonClick, onDeleteButtonClick }) {
       <Button variant="secondary" onClick={onLogoutButtonClick}>
         Logout
       </Button>
-      <Button variant="success">Change Password</Button>
+      <Button
+        variant="success"
+        onClick={() => navigate("/initiate-password-reset/")}
+      >
+        Change Password
+      </Button>
       <Button variant="danger" onClick={onDeleteButtonClick}>
         Delete Account
       </Button>

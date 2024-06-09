@@ -11,4 +11,12 @@ urlpatterns = [
     path("account-details/", views.account_details, name="account_details"),
     path("logout/", views.logout, name="logout"),
     path("delete-user/", views.delete_user, name="delete_user"),
+    path(
+        "initiate-password-reset/",
+        views.initiate_password_reset,
+        name="initiate_password_reset",
+    ),
+    path(
+        "reset-password/", views.complete_password_reset, name="complete_password_reset"
+    ),
 ]
