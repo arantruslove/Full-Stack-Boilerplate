@@ -18,6 +18,7 @@ function ResetPasswordContainer() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isInputsValid, setIsInputsValid] = useState(false);
+  const [hasErrorOccurred, setHasErrorOccurred] = useState(false);
   const [isResetSuccess, setIsResetSuccess] = useState(false);
 
   const url = useLocation().pathname;
@@ -41,6 +42,8 @@ function ResetPasswordContainer() {
 
     if (response.ok) {
       setIsResetSuccess(true);
+    } else {
+      setHasErrorOccurred(true);
     }
   };
 
@@ -49,6 +52,7 @@ function ResetPasswordContainer() {
       password={password}
       confirmPassword={confirmPassword}
       isInputsValid={isInputsValid}
+      hasErrorOccurred={hasErrorOccurred}
       isResetSuccess={isResetSuccess}
       onPasswordChange={handlePasswordChange}
       onConfirmPasswordChange={handleConfirmPasswordChange}

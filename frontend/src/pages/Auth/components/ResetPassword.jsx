@@ -10,6 +10,7 @@ function ResetPassword({
   password,
   confirmPassword,
   isInputsValid,
+  hasErrorOccurred,
   isResetSuccess,
   onPasswordChange,
   onConfirmPasswordChange,
@@ -62,6 +63,12 @@ function ResetPassword({
                       }
                     />
                   </Form.Group>
+
+                  {hasErrorOccurred && (
+                    <Form.Text className="text-danger">
+                      *An error occurred.
+                    </Form.Text>
+                  )}
                   <Form.Group className="mb-3"></Form.Group>
                   <Button
                     variant="primary"
