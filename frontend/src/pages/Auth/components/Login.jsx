@@ -80,7 +80,7 @@ function Login({
                 <Form.Group className="mb-1">
                   {isLoginIncorrect && (
                     <Form.Text className="text-danger">
-                      *Username or password is incorrect.
+                      *Email or password is incorrect.
                     </Form.Text>
                   )}
                 </Form.Group>

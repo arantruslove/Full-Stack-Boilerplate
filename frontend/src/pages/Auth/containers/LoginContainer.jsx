@@ -16,10 +16,12 @@ function LoginContainer() {
   // Event handles
   const handleEmailChange = (newText) => {
     setEmail(newText);
+    setIsLoginIncorrect(false);
   };
 
   const handlePasswordChange = (newText) => {
     setPassword(newText);
+    setIsLoginIncorrect(false);
   };
 
   const handleLogin = async () => {
