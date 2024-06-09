@@ -33,7 +33,7 @@ function ResetPassword({
               {isResetSuccess ? (
                 <>
                   <p>Your password has been reset!</p>
-                  <Button onClick={() => navigate("/login")}>Login</Button>
+                  <Button onClick={() => navigate("/login")}>Login Page</Button>
                 </>
               ) : (
                 <Form
