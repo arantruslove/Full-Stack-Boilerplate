@@ -4,6 +4,7 @@ from rest_framework import status
 from django.db import transaction
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
 
@@ -12,9 +13,10 @@ from accounts.serializers import (
     TokenObtainPairSerializer,
     EmailVerificationSerializer,
     PasswordResetSerializer,
+    ActiveRefreshTokenSerializer,
 )
 from accounts.email import send_verification_email, send_password_reset_email
-from accounts.models import EmailVerification, User, PasswordReset
+from accounts.models import EmailVerification, User, PasswordReset, ActiveRefreshToken
 
 
 @api_view(["POST"])
@@ -100,8 +102,8 @@ class TokenObtainPairView(TokenObtainPairView):
         data = request.data.copy()  # Create a mutable copy of the data
 
         # Convert username to lowercase if it's in the data
-        if "username" in data:
-            data["username"] = data["username"].lower()
+        if "email" in data:
+            data["email"] = data["email"].lower()
 
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
@@ -118,6 +120,17 @@ class TokenObtainPairView(TokenObtainPairView):
                 samesite="Lax",
                 expires=95 * 24 * 60 * 60,
             )
+
+            # Getting the user by email
+            user_id = User.objects.get(email=data["email"]).id
+            serializer = ActiveRefreshTokenSerializer(
+                data={"user": user_id, "token": response.data["refresh"]}
+            )
+            if serializer.is_valid():
+                serializer.save()
+            else:
+                return Response(serializer.errors, status=500)
+
             del response.data["refresh"]
 
         if response.data.get("access"):
@@ -254,6 +267,17 @@ def complete_password_reset(request):
 
     # Getting the user and changing its password
     user = password_reset.user
+
+    # Blacklisting all refresh tokens
+    refresh_token_instances = ActiveRefreshToken.objects.filter(user=user.id)
+    for token_instance in refresh_token_instances:
+        try:
+            token = RefreshToken(token_instance.token)
+            token.blacklist()
+        except:
+            pass
+    refresh_token_instances.delete()
+
     user.set_password(new_password)
     user.save()
 

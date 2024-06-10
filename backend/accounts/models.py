@@ -53,6 +53,13 @@ class User(AbstractUser):
     objects = UserManager()
 
 
+class ActiveRefreshToken(models.Model):
+    """Model that tracks activate refresh tokens."""
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    token = models.CharField(max_length=255, unique=True)
+
+
 # Emal and password reset classes
 class EmailVerification(models.Model):
     """Model to track email verification."""

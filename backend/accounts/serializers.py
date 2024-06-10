@@ -3,7 +3,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 
-from accounts.models import EmailVerification, PasswordReset
+from accounts.models import EmailVerification, PasswordReset, ActiveRefreshToken
 
 # Getting custom User model
 User = get_user_model()
@@ -20,6 +20,12 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(validated_data["password"])
         user.save()
         return user
+
+
+class ActiveRefreshTokenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ActiveRefreshToken
+        fields = ["user", "token"]
 
 
 class EmailVerificationSerializer(serializers.ModelSerializer):

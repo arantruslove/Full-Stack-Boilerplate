@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.utils.translation import gettext_lazy as _
 
-from accounts.models import User, EmailVerification, PasswordReset
+from accounts.models import User, ActiveRefreshToken, EmailVerification, PasswordReset
 
 
 @admin.register(User)
@@ -41,5 +41,6 @@ class UserAdmin(DjangoUserAdmin):
     ordering = ("email",)
 
 
+admin.site.register(ActiveRefreshToken)
 admin.site.register(EmailVerification)
 admin.site.register(PasswordReset)
