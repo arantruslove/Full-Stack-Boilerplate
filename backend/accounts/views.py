@@ -90,59 +90,67 @@ def verify_email(request):
         )
 
 
-class TokenObtainPairView(TokenObtainPairView):
+@api_view(["POST"])
+def obtain_token_pair(request):
     """
     Handles user login. Sets a refresh and access token as an http only cookie
     conditional on the user successfully logging in.
     """
+    data = request.data.copy()  # Create a mutable copy of the data
 
-    serializer_class = TokenObtainPairSerializer
+    # Convert email to lowercase if it's in the data
+    if "email" in data:
+        data["email"] = data["email"].lower()
 
-    def post(self, request, *args, **kwargs):
-        data = request.data.copy()  # Create a mutable copy of the data
-
-        # Convert username to lowercase if it's in the data
-        if "email" in data:
-            data["email"] = data["email"].lower()
-
-        serializer = self.get_serializer(data=data)
-        serializer.is_valid(raise_exception=True)
+    serializer = TokenObtainPairSerializer(data=data)
+    if serializer.is_valid(raise_exception=True):
         response_data = serializer.validated_data
+    else:
+        return Response(serializer.errors, status=400)
 
-        response = Response(response_data, status=status.HTTP_200_OK)
+    response = Response(response_data, status=status.HTTP_200_OK)
 
-        # Check if refresh token is present in the response data
-        if response.data.get("refresh"):
-            response.set_cookie(
-                "rt_data",
-                response.data["refresh"],
-                httponly=True,
-                samesite="Lax",
-                expires=95 * 24 * 60 * 60,
+    # Set refresh token as HTTP-only cookie
+    refresh_token = response_data.get("refresh")
+    if refresh_token:
+        response.set_cookie(
+            "rt_data",
+            refresh_token,
+            httponly=True,
+            samesite="Lax",
+            max_age=95 * 24 * 60 * 60,  # 95 days
+        )
+
+        # Getting the user by email
+        try:
+            user = User.objects.get(email=data["email"])
+        except User.DoesNotExist:
+            return Response(
+                {"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND
             )
 
-            # Getting the user by email
-            user_id = User.objects.get(email=data["email"]).id
-            serializer = ActiveRefreshTokenSerializer(
-                data={"user": user_id, "token": response.data["refresh"]}
+        # Save refresh token in the database
+        token_serializer = ActiveRefreshTokenSerializer(
+            data={"user": user.id, "token": refresh_token}
+        )
+        if token_serializer.is_valid():
+            token_serializer.save()
+        else:
+            return Response(
+                token_serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-            if serializer.is_valid():
-                serializer.save()
-            else:
-                return Response(serializer.errors, status=500)
 
-            del response.data["refresh"]
+    # Set access token as HTTP-only cookie
+    access_token = response_data.get("access")
+    if access_token:
+        response.set_cookie(
+            "at_data",
+            access_token,
+            httponly=True,
+            samesite="Lax",
+        )
 
-        if response.data.get("access"):
-            response.set_cookie(
-                "at_data",
-                response.data["access"],
-                httponly=True,
-                samesite="Lax",
-            )
-            del response.data["access"]
-
-        return response
+    return response
 
 
 class TokenRefreshView(TokenRefreshView):
