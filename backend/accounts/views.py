@@ -265,5 +265,6 @@ def complete_password_reset(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def account_details(request):
-    """Fetch the users account details (only email currently)."""
-    return Response({"email": request.user.email})
+    """Fetch the users account details."""
+    serializer = UserSerializer(request.user)
+    return Response(serializer.data)
