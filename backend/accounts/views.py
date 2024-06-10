@@ -7,7 +7,11 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
 
-from accounts.serializers import UserSerializer, TokenObtainPairSerializer
+from accounts.serializers import (
+    UserSerializer,
+    TokenObtainPairSerializer,
+    EmailVerificationSerializer,
+)
 from accounts.email import send_verification_email, send_password_reset_email
 from accounts.models import EmailVerification, User, PasswordReset
 
@@ -15,22 +19,32 @@ from accounts.models import EmailVerification, User, PasswordReset
 @api_view(["POST"])
 def sign_up(request):
     """Handles the sign up of a new user."""
-    serializer = UserSerializer(data=request.data)
-    if serializer.is_valid():
-        # Make new user and send email verification
-        try:
-            with transaction.atomic():
-                user = serializer.save()
-                send_verification_email(user)
-        except Exception as e:
-            return Response({"error": str(e)}, status=500)
 
-        return Response(
-            {"response": "User signed up successfully.", "User": serializer.data},
-            status=201,
-        )
-    else:
-        return Response(serializer.errors, status=400)
+    # Creates the User and EmailVerification instances
+    with transaction.atomic():
+        user_serializer = UserSerializer(data=request.data)
+        if user_serializer.is_valid():
+            user = user_serializer.save()
+        else:
+            return Response(user_serializer.errors, status=400)
+
+        verification_serializer = EmailVerificationSerializer(data={"user": user.id})
+        if verification_serializer.is_valid():
+            verification = verification_serializer.save()
+        else:
+            return Response(verification_serializer.errors, status=400)
+
+    # Sends the verification link in an email
+    try:
+        send_verification_email(user, verification.token)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
+
+    return Response(
+        {"response": "User signed up successfully.", "User": user_serializer.data},
+        status=201,
+    )
 
 
 @api_view(["GET"])
