@@ -1,6 +1,5 @@
 from django.core.mail import send_mail
 
-from accounts.models import EmailVerification
 from backend.config import config
 
 BASE_URL = config["TRUSTED_ORIGINS"]
