@@ -3,7 +3,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 
-from accounts.models import EmailVerification
+from accounts.models import EmailVerification, PasswordReset
 
 # Getting custom User model
 User = get_user_model()
@@ -37,3 +37,9 @@ class TokenObtainPairSerializer(TokenObtainPairSerializer):
             raise AuthenticationFailed("User is not verified.")
 
         return data
+
+
+class PasswordResetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PasswordReset
+        fields = ["user"]

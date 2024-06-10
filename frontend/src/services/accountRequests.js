@@ -103,7 +103,7 @@ export async function deleteUser() {
  */
 export async function initiatePasswordReset(data) {
   const url = `${BASE_URL}/initiate-password-reset/`;
-  const response = await apiClient.post(url, true, data);
+  const response = await apiClient.post(url, false, data);
   return response;
 }
 

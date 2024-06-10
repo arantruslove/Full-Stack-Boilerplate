@@ -11,6 +11,7 @@ from accounts.serializers import (
     UserSerializer,
     TokenObtainPairSerializer,
     EmailVerificationSerializer,
+    PasswordResetSerializer,
 )
 from accounts.email import send_verification_email, send_password_reset_email
 from accounts.models import EmailVerification, User, PasswordReset
@@ -20,8 +21,8 @@ from accounts.models import EmailVerification, User, PasswordReset
 def sign_up(request):
     """Handles the sign up of a new user."""
 
-    # Creates the User and EmailVerification instances
     with transaction.atomic():
+        # Creates the User and EmailVerification instances
         user_serializer = UserSerializer(data=request.data)
         if user_serializer.is_valid():
             user = user_serializer.save()
@@ -34,17 +35,17 @@ def sign_up(request):
         else:
             return Response(verification_serializer.errors, status=400)
 
-    # Sends the verification link in an email
-    try:
-        send_verification_email(user, verification.token)
+        # Sends the verification link in an email
+        try:
+            send_verification_email(user, verification.token)
 
-    except Exception as e:
-        return Response({"error": str(e)}, status=500)
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
 
-    return Response(
-        {"response": "User signed up successfully.", "User": user_serializer.data},
-        status=201,
-    )
+        return Response(
+            {"response": "User signed up successfully.", "User": user_serializer.data},
+            status=201,
+        )
 
 
 @api_view(["GET"])
@@ -197,8 +198,9 @@ def initiate_password_reset(request):
     Initiates the password reset process by creating a PasswordReset model
     instance and sending the weblink to reset the password.
     """
-    email = request.data.get("email")
 
+    # Getting the user by email
+    email = request.data.get("email")
     try:
         user = User.objects.get(email=email)
 
@@ -225,9 +227,10 @@ def initiate_password_reset(request):
 
     # Proceed with password reset
     with transaction.atomic():
-        password_reset = PasswordReset.objects.create(user=user)
-        token = password_reset.token
-        send_password_reset_email(user, token)
+        serializer = PasswordResetSerializer(data={"user": user.id})
+        if serializer.is_valid():
+            password_reset = serializer.save()
+        send_password_reset_email(user, password_reset.token)
 
     return Response({"detail": "Password reset email sent."})
 
