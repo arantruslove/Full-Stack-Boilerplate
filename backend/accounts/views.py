@@ -120,12 +120,19 @@ def get_auth_token(request):
     response.set_cookie(
         key="auth_token",
         value=token.key,
-        httponly=True,
+        httponly=False,
         secure=True,
         samesite="Lax",
     )
 
     return response
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_auth_status(request):
+    """Checks if the user is authenticated."""
+    return Response({"detail": "The user is authenticated."})
 
 
 @api_view(["POST"])
@@ -139,11 +146,9 @@ def token_refresh_view(request):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def logout(request):
-    """Log out user by removing their refresh and access tokens."""
-    response = Response({"detail": "Cookie Deleted!"})
-    response.delete_cookie("at_data")
-    response.delete_cookie("rt_data")
-
+    """Log out user by removing their authentication token."""
+    response = Response({"detail": "Authenticated token deleted."})
+    response.delete_cookie("auth_token")
     return response
 
 

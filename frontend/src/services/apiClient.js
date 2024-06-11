@@ -28,8 +28,8 @@ async function get(url, authenticated) {
 
   // Fetch access token and add as authorization header if required
   if (authenticated) {
-    const accessToken = Cookies.get("at_data");
-    options["headers"]["Authorization"] = `Bearer ${accessToken}`;
+    const authToken = Cookies.get("auth_token");
+    options["headers"]["Authorization"] = `Token ${authToken}`;
   }
 
   const response = await fetch(url, options);
@@ -56,8 +56,8 @@ async function post(url, authenticated, body = null) {
 
   // Fetch access token and add as authorization header if required
   if (authenticated) {
-    const accessToken = Cookies.get("at_data");
-    options["headers"]["Authorization"] = `Bearer ${accessToken}`;
+    const authToken = Cookies.get("auth_token");
+    options["headers"]["Authorization"] = `Token ${authToken}`;
   }
 
   // Adding JSON body if passed as an argument
@@ -89,8 +89,8 @@ async function put(url, authenticated, body = null) {
 
   // Fetch access token and add as authorization header if required
   if (authenticated) {
-    const accessToken = Cookies.get("at_data");
-    options["headers"]["Authorization"] = `Bearer ${accessToken}`;
+    const authToken = Cookies.get("auth_token");
+    options["headers"]["Authorization"] = `Token ${authToken}`;
   }
 
   // Adding JSON body if passed as an argument
@@ -122,8 +122,8 @@ async function del(url, authenticated) {
 
   // Fetch access token and add as authorization header if required
   if (authenticated) {
-    const accessToken = Cookies.get("at_data");
-    options["headers"]["Authorization"] = `Bearer ${accessToken}`;
+    const authToken = Cookies.get("auth_token");
+    options["headers"]["Authorization"] = `Token ${authToken}`;
   }
 
   const response = await fetch(url, options);
