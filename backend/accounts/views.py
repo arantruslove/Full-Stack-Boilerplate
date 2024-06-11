@@ -96,59 +96,47 @@ def obtain_token_pair(request):
     Handles user login. Sets a refresh and access token as an http only cookie
     conditional on the user successfully logging in.
     """
-    data = request.data.copy()  # Create a mutable copy of the data
 
-    # Convert email to lowercase if it's in the data
-    if "email" in data:
-        data["email"] = data["email"].lower()
-
-    serializer = TokenObtainPairSerializer(data=data)
-    if serializer.is_valid(raise_exception=True):
-        response_data = serializer.validated_data
-    else:
+    serializer = TokenObtainPairSerializer(data=request.data)
+    if not serializer.is_valid():
         return Response(serializer.errors, status=400)
 
-    response = Response(response_data, status=status.HTTP_200_OK)
+    response_data = serializer.validated_data
+    response = Response({}, status=status.HTTP_200_OK)
 
     # Set refresh token as HTTP-only cookie
     refresh_token = response_data.get("refresh")
-    if refresh_token:
-        response.set_cookie(
-            "rt_data",
-            refresh_token,
-            httponly=True,
-            samesite="Lax",
-            max_age=95 * 24 * 60 * 60,  # 95 days
-        )
+    response.set_cookie(
+        "rt_data",
+        refresh_token,
+        httponly=True,
+        samesite="Lax",
+    )
 
-        # Getting the user by email
-        try:
-            user = User.objects.get(email=data["email"])
-        except User.DoesNotExist:
-            return Response(
-                {"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND
-            )
+    # Getting the user by email to save the refresh token in the database
+    try:
+        user = User.objects.get(email=request.data["email"])
+    except User.DoesNotExist:
+        return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        # Save refresh token in the database
-        token_serializer = ActiveRefreshTokenSerializer(
-            data={"user": user.id, "token": refresh_token}
+    token_serializer = ActiveRefreshTokenSerializer(
+        data={"user": user.id, "token": refresh_token}
+    )
+    if token_serializer.is_valid():
+        token_serializer.save()
+    else:
+        return Response(
+            token_serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
-        if token_serializer.is_valid():
-            token_serializer.save()
-        else:
-            return Response(
-                token_serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
 
     # Set access token as HTTP-only cookie
     access_token = response_data.get("access")
-    if access_token:
-        response.set_cookie(
-            "at_data",
-            access_token,
-            httponly=True,
-            samesite="Lax",
-        )
+    response.set_cookie(
+        "at_data",
+        access_token,
+        httponly=True,
+        samesite="Lax",
+    )
 
     return response
 
