@@ -13,7 +13,7 @@ function AccountContainer() {
   const [isLoading, setIsLoading] = useState(true);
   const [email, setEmail] = useState("");
 
-  const { refreshToken } = useContext(AuthContext);
+  const { updateLoginStatus } = useContext(AuthContext);
 
   useEffect(() => {
     const effectFunction = async () => {
@@ -30,7 +30,7 @@ function AccountContainer() {
   const handleLogOutButtonClick = async () => {
     // Logging out the user
     await removeRefreshAccessTokens();
-    await refreshToken();
+    await updateLoginStatus();
   };
 
   const handleDeleteButtonClick = async () => {
@@ -39,7 +39,7 @@ function AccountContainer() {
 
     // If successful, log the user out of the page
     if (response.ok) {
-      await refreshToken();
+      await updateLoginStatus();
     }
   };
 
