@@ -204,11 +204,11 @@ def complete_password_reset(request):
     Completes the password reset when the user provides their new password.
     """
     new_password = request.data["new_password"]
-    token = request.data["token"]
+    reset_token = request.data["token"]
 
     # Getting the associated PasswordReset model instance by the token in the url
     try:
-        password_reset = PasswordReset.objects.get(token=token)
+        password_reset = PasswordReset.objects.get(token=reset_token)
     except:
         return Response(
             {"details": "The token provided is not valid."},
@@ -217,13 +217,13 @@ def complete_password_reset(request):
 
     # Getting the user and changing its password
     user = password_reset.user
-
-    # Blacklisting all refresh tokens
-
     user.set_password(new_password)
     user.save()
-
     password_reset.delete()
+
+    # Log out all users by removing current authentication token
+    auth_token = Token.objects.get(user=user)
+    auth_token.delete()
 
     return Response({"detail": "Your password has been changed."})
 
