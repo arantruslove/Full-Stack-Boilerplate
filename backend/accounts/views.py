@@ -112,7 +112,7 @@ def get_auth_token(request):
     else:
         return Response(
             {"detail": "No account with this username or password."},
-            status=status.HTTP_404_NOT_FOUND,
+            status=status.HTTP_401_UNAUTHORIZED,
         )
 
     # Setting the httpOnly cookie
@@ -156,15 +156,10 @@ def logout(request):
 @permission_classes([IsAuthenticated])
 def delete_user(request):
     """Hard deletion of the user's account."""
-
-    # Deleting the user
     request.user.delete()
-    response = Response({"detail": "User deleted"})
-
-    # Deleting the cookies
-    response.delete_cookie("at_data")
-    response.delete_cookie("rt_data")
-
+    response = Response({"detail": "User deleted."})
+    # Logging out
+    response.delete_cookie("auth_token")
     return response
 
 
