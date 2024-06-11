@@ -26,9 +26,6 @@ function AuthProvider({ children }) {
   // Will logout if the refresh is unsuccessful
   useEffect(() => {
     refreshToken();
-
-    // Refresh access token every 29 minutes
-    setInterval(refreshToken, 29 * 60 * 1000);
   }, []);
 
   return (
