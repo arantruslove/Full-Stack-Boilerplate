@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from accounts.models import EmailVerification, PasswordReset, ActiveRefreshToken
+from accounts.models import EmailVerification, PasswordReset
 
 # Getting custom User model
 User = get_user_model()
@@ -18,12 +18,6 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(validated_data["password"])
         user.save()
         return user
-
-
-class ActiveRefreshTokenSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ActiveRefreshToken
-        fields = ["user", "token"]
 
 
 class EmailVerificationSerializer(serializers.ModelSerializer):
