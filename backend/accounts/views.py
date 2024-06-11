@@ -3,8 +3,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.db import transaction
 from django.contrib.auth import get_user_model
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
 
@@ -94,7 +94,12 @@ def verify_email(request):
 def obtain_token_pair(request):
     """
     Handles user login. Sets a refresh and access token as an http only cookie
-    conditional on the user successfully logging in.
+    conditional on the user successfully logging in. Stores the generated refresh token
+    in the db for easy blacklisting.
+
+    request.data fields:
+    - email
+    - password
     """
 
     # Generating refresh and access token and saving in response_data
@@ -103,7 +108,7 @@ def obtain_token_pair(request):
         return Response(serializer.errors, status=400)
 
     response_data = serializer.validated_data
-    response = Response({}, status=status.HTTP_200_OK)
+    response = Response({"detail": "User logged in"}, status=status.HTTP_200_OK)
 
     # Set refresh token as HTTP-only cookie
     refresh_token = response_data.get("refresh")
@@ -142,37 +147,37 @@ def obtain_token_pair(request):
     return response
 
 
-class TokenRefreshView(TokenRefreshView):
+@api_view(["POST"])
+def token_refresh_view(request):
     """
     Refreshes the access token given the refresh token.
     """
+    # Extract the refresh token from the cookie.
+    refresh_token = request.COOKIES.get("rt_data")
 
-    def post(self, request, *args, **kwargs):
-        # Extract the refresh token from the cookie.
-        refresh_token = request.COOKIES.get("rt_data")
+    if not refresh_token:
+        return Response(
+            {"detail": "Refresh token not provided in cookie"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
-        if not refresh_token:
-            return Response(
-                {"detail": "Refresh token not provided in cookie"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+    # Use the TokenRefreshSerializer to validate and create new access token
+    serializer = TokenRefreshSerializer(data={"refresh": refresh_token})
+    if serializer.is_valid():
+        response_data = serializer.validated_data
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        # Modify the request's data to inject the refresh token
-        request.data["refresh"] = refresh_token
+    # If access token is present, set it as a cookie
+    response = Response({"detail": "Access token refreshed"}, status=status.HTTP_200_OK)
+    if response_data.get("access"):
+        response.set_cookie(
+            "at_data",
+            response_data["access"],
+            samesite="Lax",
+        )
 
-        # Get the response from the superclass
-        response = super().post(request, *args, **kwargs)
-
-        # If access token is present, set it as a cookie
-        if response.data.get("access"):
-            response.set_cookie(
-                "at_data",
-                response.data["access"],
-                samesite="Lax",
-            )
-
-        response.data.pop("access", None)
-        return response
+    return response
 
 
 @api_view(["POST"])
