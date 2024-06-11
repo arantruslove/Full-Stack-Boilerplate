@@ -71,7 +71,7 @@ export async function getTokenPair(data) {
 export async function getRefreshAccessTokens(data) {
   const url = `${BASE_URL}/token/refresh/`;
 
-  const response = await apiClient.post(url, true, data);
+  const response = await apiClient.post(url, false, data);
   return response;
 }
 
