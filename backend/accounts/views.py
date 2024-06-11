@@ -97,6 +97,7 @@ def obtain_token_pair(request):
     conditional on the user successfully logging in.
     """
 
+    # Generating refresh and access token and saving in response_data
     serializer = TokenObtainPairSerializer(data=request.data)
     if not serializer.is_valid():
         return Response(serializer.errors, status=400)
@@ -109,6 +110,15 @@ def obtain_token_pair(request):
     response.set_cookie(
         "rt_data",
         refresh_token,
+        httponly=True,
+        samesite="Lax",
+    )
+
+    # Set access token as HTTP-only cookie
+    access_token = response_data.get("access")
+    response.set_cookie(
+        "at_data",
+        access_token,
         httponly=True,
         samesite="Lax",
     )
@@ -128,15 +138,6 @@ def obtain_token_pair(request):
         return Response(
             token_serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
-
-    # Set access token as HTTP-only cookie
-    access_token = response_data.get("access")
-    response.set_cookie(
-        "at_data",
-        access_token,
-        httponly=True,
-        samesite="Lax",
-    )
 
     return response
 
