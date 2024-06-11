@@ -56,7 +56,7 @@ export async function verifyEmail(data) {
  * @returns Promise
  */
 export async function getTokenPair(data) {
-  const url = `${BASE_URL}/token/`;
+  const url = `${BASE_URL}/get-auth-token/`;
   const response = await apiClient.post(url, false, data);
   return response;
 }

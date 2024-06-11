@@ -1,7 +1,5 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework_simplejwt.exceptions import AuthenticationFailed
 
 from accounts.models import EmailVerification, PasswordReset, ActiveRefreshToken
 
@@ -32,17 +30,6 @@ class EmailVerificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = EmailVerification
         fields = ["user"]
-
-
-class TokenObtainPairSerializer(TokenObtainPairSerializer):
-    def validate(self, attrs):
-        data = super().validate(attrs)
-        user = self.user
-
-        if not user.is_verified:
-            raise AuthenticationFailed("User is not verified.")
-
-        return data
 
 
 class PasswordResetSerializer(serializers.ModelSerializer):

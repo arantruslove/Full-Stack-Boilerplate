@@ -3,20 +3,18 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.db import transaction
 from django.contrib.auth import get_user_model
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.serializers import TokenRefreshSerializer
+from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
+from rest_framework.authtoken.models import Token
 
 from accounts.serializers import (
     UserSerializer,
-    TokenObtainPairSerializer,
     EmailVerificationSerializer,
     PasswordResetSerializer,
-    ActiveRefreshTokenSerializer,
 )
 from accounts.email import send_verification_email, send_password_reset_email
-from accounts.models import EmailVerification, User, PasswordReset, ActiveRefreshToken
+from accounts.models import EmailVerification, User, PasswordReset
 
 
 @api_view(["POST"])
@@ -91,58 +89,41 @@ def verify_email(request):
 
 
 @api_view(["POST"])
-def obtain_token_pair(request):
+def get_auth_token(request):
     """
-    Handles user login. Sets a refresh and access token as an http only cookie
-    conditional on the user successfully logging in. Stores the generated refresh token
-    in the db for easy blacklisting.
+    Handles user login by returning an access token.
 
     request.data fields:
     - email
     - password
     """
 
-    # Generating refresh and access token and saving in response_data
-    serializer = TokenObtainPairSerializer(data=request.data)
-    if not serializer.is_valid():
-        return Response(serializer.errors, status=400)
+    email = request.data.get("email")
+    password = request.data.get("password")
+    user = authenticate(request, email=email, password=password)
 
-    response_data = serializer.validated_data
-    response = Response({"detail": "User logged in"}, status=status.HTTP_200_OK)
-
-    # Set refresh token as HTTP-only cookie
-    refresh_token = response_data.get("refresh")
-    response.set_cookie(
-        "rt_data",
-        refresh_token,
-        httponly=True,
-        samesite="Lax",
-    )
-
-    # Set access token as HTTP-only cookie
-    access_token = response_data.get("access")
-    response.set_cookie(
-        "at_data",
-        access_token,
-        httponly=True,
-        samesite="Lax",
-    )
-
-    # Getting the user by email to save the refresh token in the database
-    try:
-        user = User.objects.get(email=request.data["email"])
-    except User.DoesNotExist:
-        return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
-
-    token_serializer = ActiveRefreshTokenSerializer(
-        data={"user": user.id, "token": refresh_token}
-    )
-    if token_serializer.is_valid():
-        token_serializer.save()
+    if user is not None:
+        # Obtain the current token if one already exists
+        if Token.objects.filter(user=user).exists():
+            token = Token.objects.get(user=user)
+        # Create a new token if one does not exist
+        else:
+            token = Token.objects.create(user=user)
     else:
         return Response(
-            token_serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            {"detail": "No account with this username or password."},
+            status=status.HTTP_404_NOT_FOUND,
         )
+
+    # Setting the httpOnly cookie
+    response = Response({"detail": "Authentication token set"})
+    response.set_cookie(
+        key="auth_token",
+        value=token.key,
+        httponly=True,
+        secure=True,
+        samesite="Lax",
+    )
 
     return response
 
@@ -152,32 +133,7 @@ def token_refresh_view(request):
     """
     Refreshes the access token given the refresh token.
     """
-    # Extract the refresh token from the cookie.
-    refresh_token = request.COOKIES.get("rt_data")
-
-    if not refresh_token:
-        return Response(
-            {"detail": "Refresh token not provided in cookie"},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
-
-    # Use the TokenRefreshSerializer to validate and create new access token
-    serializer = TokenRefreshSerializer(data={"refresh": refresh_token})
-    if serializer.is_valid():
-        response_data = serializer.validated_data
-    else:
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    # If access token is present, set it as a cookie
-    response = Response({"detail": "Access token refreshed"}, status=status.HTTP_200_OK)
-    if response_data.get("access"):
-        response.set_cookie(
-            "at_data",
-            response_data["access"],
-            samesite="Lax",
-        )
-
-    return response
+    return Response({"detail": "This is a placeholder"})
 
 
 @api_view(["POST"])
@@ -271,14 +227,6 @@ def complete_password_reset(request):
     user = password_reset.user
 
     # Blacklisting all refresh tokens
-    refresh_token_instances = ActiveRefreshToken.objects.filter(user=user.id)
-    for token_instance in refresh_token_instances:
-        try:
-            token = RefreshToken(token_instance.token)
-            token.blacklist()
-        except:
-            pass
-    refresh_token_instances.delete()
 
     user.set_password(new_password)
     user.save()
