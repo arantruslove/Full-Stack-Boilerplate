@@ -136,14 +136,6 @@ def get_auth_status(request):
 
 
 @api_view(["POST"])
-def token_refresh_view(request):
-    """
-    Refreshes the access token given the refresh token.
-    """
-    return Response({"detail": "This is a placeholder"})
-
-
-@api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def logout(request):
     """Log out user by removing their authentication token."""
