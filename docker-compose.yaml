@@ -32,6 +32,16 @@ services:
       - static_volume:/backend/staticfiles
     depends_on:
       - db
+    environment:
+      - DEBUG=True
+      - TRUSTED_ORIGINS=http://localhost
+      - ALLOWED_HOSTS=localhost
+      - EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
+      - DB_NAME=mydatabase
+      - DB_USER=myuser
+      - DB_PASSWORD=mypassword
+      - DB_HOST=db
+      - DB_PORT=5432
     env_file:
       - .env.dev
 
