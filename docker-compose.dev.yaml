@@ -15,7 +15,7 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile.dev
+      dockerfile: docker/Dockerfile.dev
     ports:
       - "3000:3000"
     volumes:
@@ -25,7 +25,7 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile.dev
+      dockerfile: docker/Dockerfile.dev
     command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
     volumes:
       - ./backend:/backend
