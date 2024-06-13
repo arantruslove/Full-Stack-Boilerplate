@@ -29,7 +29,7 @@ def send_password_reset_email(user, base_url, token):
 
     subject = "Reset your password"
     message = f"Click the link to reset your password: {verification_link}"
-    html_content = f'<p>Click the link to reset your password: <a href="{verification_link}">Reset password</a></p><p>username: {user.username}</p>'
+    html_content = f'<p>Click the link to reset your password: <a href="{verification_link}">Reset password</a></p>'
     from_email = config["EMAIL_HOST_USER"]
     recipient_list = [user.email]
 
