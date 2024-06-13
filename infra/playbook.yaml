@@ -1,0 +1,42 @@
+---
+- name: Test connectivity and install Git on EC2 instance
+  hosts: all
+  become: yes
+  tasks:
+    - name: Install Git
+      package:
+        name: git
+        state: present
+
+    - name: Install Docker
+      package:
+        name: docker
+        state: present
+
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Add ec2-user to docker group
+      user:
+        name: ec2-user
+        groups: docker
+        append: yes
+
+    - name: Enable Docker service to start on boot
+      systemd:
+        name: docker
+        enabled: yes
+        state: started
+        daemon_reload: yes
+
+    - name: Install pip3
+      package:
+        name: python3-pip
+        state: present
+
+    - name: Install Docker Compose using pip with ignore-installed flag
+      command: /usr/bin/pip3 install --ignore-installed docker-compose
+      register: pip_install_output

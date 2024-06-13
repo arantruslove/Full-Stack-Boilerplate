@@ -1,6 +1,7 @@
 .env
 .env.dev
 terraform.tfvars
+hosts.ini
 
 .terraform*
 *.rest
