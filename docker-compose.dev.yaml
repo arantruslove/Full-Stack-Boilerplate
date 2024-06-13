@@ -17,8 +17,6 @@ services:
     build:
       context: ./frontend
       dockerfile: docker/Dockerfile.dev
-    ports:
-      - "3000:3000"
     volumes:
       - ./frontend:/frontend
       - node_modules:/frontend/node_modules
@@ -45,8 +43,6 @@ services:
       - DB_PORT=5432
     env_file:
       - .env.dev
-    ports:
-      - "8000:8000"
 
   db:
     image: postgres:16.3
