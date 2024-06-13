@@ -3,4 +3,6 @@ dist/
 __pycache__/
 env_site/
 .env.dev
+.terraform*
+
 *.rest
