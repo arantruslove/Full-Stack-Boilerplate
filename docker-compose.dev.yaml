@@ -41,6 +41,7 @@ services:
       - DB_PASSWORD=mypassword
       - DB_HOST=db
       - DB_PORT=5432
+      - SECRET_KEY=${SECRET_KEY:?}
     env_file:
       - .env.dev
 
