@@ -7,6 +7,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "80:80"
+    volumes:
+      - django_admin_static:/nginx_static # Serve django admin static files
     depends_on:
       - frontend
       - backend
@@ -20,6 +22,8 @@ services:
     build:
       context: ./backend
       dockerfile: docker/Dockerfile.prod
+    volumes:
+      - django_admin_static:/backend/staticfiles # Django admin static files
     environment:
       - DEBUG=False
       - SECRET_KEY=${SECRET_KEY:?}
@@ -37,3 +41,6 @@ services:
 
     env_file:
       - .env
+
+volumes:
+ django_admin_static:
