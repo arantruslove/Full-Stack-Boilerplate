@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
 from rest_framework.authtoken.models import Token
+from urllib.parse import urlsplit
 
 from accounts.serializers import (
     UserSerializer,
@@ -37,7 +38,11 @@ def sign_up(request):
 
         # Sends the verification link in an email
         try:
-            send_verification_email(user, verification.token)
+            full_host = request.get_host()
+            scheme = request.scheme
+            domain = urlsplit(f"//{full_host}").hostname
+            base_url = f"{scheme}://{domain}"
+            send_verification_email(user, base_url, verification.token)
 
         except Exception as e:
             return Response({"error": str(e)}, status=500)
@@ -193,7 +198,13 @@ def initiate_password_reset(request):
         serializer = PasswordResetSerializer(data={"user": user.id})
         if serializer.is_valid():
             password_reset = serializer.save()
-        send_password_reset_email(user, password_reset.token)
+
+        # Send password reset email
+        full_host = request.get_host()
+        scheme = request.scheme
+        domain = urlsplit(f"//{full_host}").hostname
+        base_url = f"{scheme}://{domain}"
+        send_password_reset_email(user, base_url, password_reset.token)
 
     return Response({"detail": "Password reset email sent."})
 
