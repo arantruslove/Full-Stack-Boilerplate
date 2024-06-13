@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+      - backend
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: docker/Dockerfile.dev
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: docker/Dockerfile.prod
+    environment:
+      - DEBUG=True
+      - TRUSTED_ORIGINS=http://localhost
+      - ALLOWED_HOSTS=localhost
+      - EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
+    env_file:
+      - .env.dev
