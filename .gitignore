@@ -1,8 +1,11 @@
+.env
+.env.dev
+terraform.tfvars
+
+.terraform*
+*.rest
+
 node_modules/
 dist/
 __pycache__/
 env_site/
-.env.dev
-.terraform*
-
-*.rest

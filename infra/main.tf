@@ -18,6 +18,9 @@ Setting up VPC and compute instances
 resource "aws_vpc" "main" {
   cidr_block = "10.0.0.0/16"
 
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+
   tags = {
     Name = "Terraform-VPC"
   }
@@ -170,6 +173,79 @@ resource "aws_instance" "instance_2" {
   tags = {
     Name        = "instance-2"
     Environment = var.production_instance == 1 ? "staging" : "production"
+  }
+}
+
+# Postgres rds instance
+resource "aws_subnet" "rds_subnet_1" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.4.0/24"
+  availability_zone = "eu-west-2a"
+
+  tags = {
+    Name = "rds-subnet-1"
+  }
+}
+
+resource "aws_subnet" "rds_subnet_2" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.5.0/24"
+  availability_zone = "eu-west-2b"
+
+  tags = {
+    Name = "rds-subnet-2"
+  }
+}
+
+resource "aws_db_subnet_group" "rds_subnet_group" {
+  subnet_ids = [aws_subnet.rds_subnet_1.id, aws_subnet.rds_subnet_2.id]
+  tags = {
+    Name = "rds-subnet-group"
+  }
+}
+
+resource "aws_security_group" "rds_security_group" {
+
+  ingress {
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "rds-subnet-group"
+  }
+}
+
+
+
+# Creating postgresql database instance
+resource "aws_db_instance" "postgres" {
+  allocated_storage    = 20
+  storage_type         = "gp2"
+  engine               = "postgres"
+  engine_version       = "16.3"
+  instance_class       = "db.t3.micro"
+  db_name              = var.db_name
+  username             = var.db_username
+  password             = var.db_password
+  parameter_group_name = "default.postgres16"
+  publicly_accessible  = true
+  skip_final_snapshot  = true
+
+  db_subnet_group_name   = aws_db_subnet_group.rds_subnet_group.name
+  vpc_security_group_ids = [aws_security_group.rds_security_group.id]
+
+  tags = {
+    Name = "production-db"
   }
 }
 
