@@ -147,6 +147,7 @@ resource "aws_instance" "instance_1" {
   instance_type               = "t2.micro"
   subnet_id                   = aws_subnet.public.id
   vpc_security_group_ids      = [aws_security_group.ssh-http-security-group.id]
+  private_ip                  = "10.0.1.101"
   iam_instance_profile        = aws_iam_instance_profile.ssm-instance-profile.name
   associate_public_ip_address = true
 
@@ -164,6 +165,7 @@ resource "aws_instance" "instance_2" {
   instance_type               = "t2.micro"
   subnet_id                   = aws_subnet.public.id
   vpc_security_group_ids      = [aws_security_group.ssh-http-security-group.id]
+  private_ip                  = "10.0.1.102"
   iam_instance_profile        = aws_iam_instance_profile.ssm-instance-profile.name
   associate_public_ip_address = true
 
