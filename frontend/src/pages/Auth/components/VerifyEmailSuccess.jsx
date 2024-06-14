@@ -7,7 +7,7 @@ function verifyEmailSuccess() {
     <Container className="mt-3">
       <Row className="justify-content-center mb-2">
         <Col className="text-center">
-          <h1 className="display-5">AI-CV Generator</h1>
+          <h1 className="display-5">App Name Placholder</h1>
         </Col>
       </Row>
       <Row className="justify-content-center">

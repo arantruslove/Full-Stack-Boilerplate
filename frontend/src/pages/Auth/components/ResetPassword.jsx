@@ -24,7 +24,7 @@ function ResetPassword({
     >
       <Row className="justify-content-center mb-3 mt-3">
         <Col className="text-center">
-          <h1 className="display-5">AI-CV Generator</h1>
+          <h1 className="display-5">App Name Placholder</h1>
         </Col>
       </Row>
       <Row>
