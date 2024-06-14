@@ -32,4 +32,9 @@ variable "db_password" {
   type        = string
 }
 
+variable "ip_whitelist" {
+  description = "List of ip addressess allowed to access staging environment and db."
+  type        = list(string)
+}
+
 

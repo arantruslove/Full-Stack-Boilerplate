@@ -371,13 +371,33 @@ resource "aws_lb_listener" "main-https" {
   certificate_arn = aws_acm_certificate.main.arn
 
   default_action {
-    type             = "forward"
-    target_group_arn = var.production_instance == 1 ? aws_lb_target_group.target-group-1.arn : aws_lb_target_group.target-group-2.arn
+    type = "fixed-response"
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "404: Not Found"
+      status_code  = "404"
+    }
   }
 }
 
-# Adding a listener rule
-resource "aws_lb_listener_rule" "main_rule" {
+# Adding www and staging listener rules
+# Routes traffic to production instance
+resource "aws_lb_listener_rule" "www_rule" {
+  listener_arn = aws_lb_listener.main-https.arn
+
+  action {
+    type             = "forward"
+    target_group_arn = var.production_instance == 1 ? aws_lb_target_group.target-group-1.arn : aws_lb_target_group.target-group-2.arn
+  }
+
+  condition {
+    host_header {
+      values = ["www.${var.domain_name}"]
+    }
+  }
+  priority = 1
+}
+resource "aws_lb_listener_rule" "staging_rule" {
   listener_arn = aws_lb_listener.main-https.arn
 
   action {
@@ -391,7 +411,14 @@ resource "aws_lb_listener_rule" "main_rule" {
     }
   }
 
-  priority = 1
+  # Staging environment only accessible from permitted ip addresses
+  condition {
+    source_ip {
+      values = var.ip_whitelist
+    }
+  }
+
+  priority = 2
 }
 
 # Route 53 hosted zone
