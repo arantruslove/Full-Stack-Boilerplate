@@ -396,6 +396,10 @@ resource "aws_lb_listener_rule" "www_rule" {
     }
   }
   priority = 1
+
+  tags = {
+    Name = "production"
+  }
 }
 resource "aws_lb_listener_rule" "staging_rule" {
   listener_arn = aws_lb_listener.main-https.arn
@@ -416,6 +420,10 @@ resource "aws_lb_listener_rule" "staging_rule" {
     source_ip {
       values = var.ip_whitelist
     }
+  }
+
+  tags = {
+    Name = "staging"
   }
 
   priority = 2
