@@ -372,7 +372,7 @@ resource "aws_lb_listener" "main-https" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.target-group-1.arn
+    target_group_arn = var.production_instance == 1 ? aws_lb_target_group.target-group-1.arn : aws_lb_target_group.target-group-2.arn
   }
 }
 
