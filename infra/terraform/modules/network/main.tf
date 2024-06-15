@@ -1,3 +1,4 @@
+/**VPC Configuration*/
 resource "aws_vpc" "main" {
   cidr_block = "10.0.0.0/16"
 
@@ -17,6 +18,7 @@ resource "aws_internet_gateway" "main" {
   }
 }
 
+/**Subnets*/
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
 
@@ -30,7 +32,7 @@ resource "aws_route_table" "public" {
   }
 }
 
-
+# EC2 subnets
 resource "aws_subnet" "ec2_subnet" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = "10.0.1.0/24"
@@ -45,3 +47,25 @@ resource "aws_route_table_association" "ec2_association" {
   subnet_id      = aws_subnet.ec2_subnet.id
   route_table_id = aws_route_table.public.id
 }
+
+# RDS subnets
+resource "aws_subnet" "rds_subnet_1" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.2.0/24"
+  availability_zone = "eu-west-2a"
+
+  tags = {
+    Name = "rds-subnet-1"
+  }
+}
+
+resource "aws_subnet" "rds_subnet_2" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.3.0/24"
+  availability_zone = "eu-west-2b"
+
+  tags = {
+    Name = "rds-subnet-2"
+  }
+}
+
