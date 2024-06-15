@@ -80,12 +80,6 @@ resource "aws_subnet" "lb_subnet_1" {
   }
 }
 
-resource "aws_route_table_association" "lb_subnet_1_association" {
-  subnet_id      = aws_subnet.lb_subnet_1.id
-  route_table_id = aws_route_table.public.id
-}
-
-
 resource "aws_subnet" "lb_subnet_2" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = "10.0.5.0/24"
@@ -94,6 +88,12 @@ resource "aws_subnet" "lb_subnet_2" {
   tags = {
     Name = "lb-subnet-2"
   }
+}
+
+# Associations
+resource "aws_route_table_association" "lb_subnet_1_association" {
+  subnet_id      = aws_subnet.lb_subnet_1.id
+  route_table_id = aws_route_table.public.id
 }
 
 resource "aws_route_table_association" "lb_subnet_2_association" {
