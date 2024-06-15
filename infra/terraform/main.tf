@@ -46,3 +46,11 @@ module "load_balancer" {
   ec2_instance_1_id = module.compute.ec2_instance_1.id
   ec2_instance_2_id = module.compute.ec2_instance_2.id
 }
+
+module "dns" {
+  source      = "./modules/dns"
+  domain_name = var.domain_name
+  lb_dns_name = module.load_balancer.lb.dns_name
+  lb_zone_id  = module.load_balancer.lb.zone_id
+}
+
