@@ -37,3 +37,12 @@ module "rds" {
   db_username    = var.db_username
   db_password    = var.db_password
 }
+
+module "load_balancer" {
+  source            = "./modules/load_balancer"
+  vpc_id            = module.network.vpc.id
+  lb_subnet_ids     = [module.network.lb_subnet_1.id, module.network.lb_subnet_2.id]
+  lb_sg_id          = module.security_groups.https_sg.id
+  ec2_instance_1_id = module.compute.ec2_instance_1.id
+  ec2_instance_2_id = module.compute.ec2_instance_2.id
+}
