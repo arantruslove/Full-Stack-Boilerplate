@@ -1,11 +1,5 @@
-# Storing statefile
 terraform {
-  backend "s3" {
-    bucket  = "terraform-12345"
-    key     = "terraform.tfstate"
-    region  = "eu-west-2"
-    encrypt = true
-  }
+  backend "s3" {}
 }
 
 provider "aws" {
