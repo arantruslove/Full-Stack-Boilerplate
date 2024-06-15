@@ -59,3 +59,71 @@ resource "aws_lb_target_group_attachment" "attachment-2" {
   target_id        = var.ec2_instance_2_id
   port             = 80
 }
+
+# Load balancer listener and rules
+resource "aws_lb_listener" "main_listener" {
+  load_balancer_arn = aws_lb.main.arn
+  port              = 443
+  protocol          = "HTTPS"
+
+  ssl_policy      = "ELBSecurityPolicy-2016-08"
+  certificate_arn = var.ssl_certificate_arn
+
+  default_action {
+    type = "fixed-response"
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "404: Not Found"
+      status_code  = "404"
+    }
+  }
+}
+
+# Adding www and staging listener rules
+# Routes traffic to production instance
+resource "aws_lb_listener_rule" "www_rule" {
+  listener_arn = aws_lb_listener.main_listener.arn
+
+  action {
+    type             = "forward"
+    target_group_arn = var.production_instance == 1 ? aws_lb_target_group.target_group_1.arn : aws_lb_target_group.target_group_2.arn
+  }
+
+  condition {
+    host_header {
+      values = ["www.${var.domain_name}"]
+    }
+  }
+  priority = 1
+
+  tags = {
+    Name = "production"
+  }
+}
+resource "aws_lb_listener_rule" "staging_rule" {
+  listener_arn = aws_lb_listener.main_listener.arn
+
+  action {
+    type             = "forward"
+    target_group_arn = var.production_instance == 1 ? aws_lb_target_group.target_group_2.arn : aws_lb_target_group.target_group_1.arn
+  }
+
+  condition {
+    host_header {
+      values = ["staging.${var.domain_name}"]
+    }
+  }
+
+  # Staging environment only accessible from permitted ip addresses
+  condition {
+    source_ip {
+      values = var.ip_whitelist
+    }
+  }
+
+  tags = {
+    Name = "staging"
+  }
+
+  priority = 2
+}

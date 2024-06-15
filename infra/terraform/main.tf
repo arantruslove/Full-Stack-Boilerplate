@@ -39,12 +39,16 @@ module "rds" {
 }
 
 module "load_balancer" {
-  source            = "./modules/load_balancer"
-  vpc_id            = module.network.vpc.id
-  lb_subnet_ids     = [module.network.lb_subnet_1.id, module.network.lb_subnet_2.id]
-  lb_sg_id          = module.security_groups.https_sg.id
-  ec2_instance_1_id = module.compute.ec2_instance_1.id
-  ec2_instance_2_id = module.compute.ec2_instance_2.id
+  source              = "./modules/load_balancer"
+  domain_name         = var.domain_name
+  production_instance = var.production_instance
+  ip_whitelist        = var.ip_whitelist
+  vpc_id              = module.network.vpc.id
+  lb_subnet_ids       = [module.network.lb_subnet_1.id, module.network.lb_subnet_2.id]
+  lb_sg_id            = module.security_groups.https_sg.id
+  ec2_instance_1_id   = module.compute.ec2_instance_1.id
+  ec2_instance_2_id   = module.compute.ec2_instance_2.id
+  ssl_certificate_arn = module.dns.ssl_certificate.arn
 }
 
 module "dns" {
