@@ -50,7 +50,6 @@ resource "aws_security_group" "https_security_group" {
 }
 
 resource "aws_security_group" "rds_security_group" {
-  name   = "rds-security-group"
   vpc_id = var.vpc_id
 
   ingress {
@@ -65,5 +64,9 @@ resource "aws_security_group" "rds_security_group" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "rds-security-group"
   }
 }
